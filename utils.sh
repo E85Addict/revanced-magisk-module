@@ -98,8 +98,8 @@ get_prebuilts() {
 		chmod +x "${TEMP_DIR}/aapt2"
 	fi
 	mkdir -p ${MODULE_TEMPLATE_DIR}/bin/arm64 ${MODULE_TEMPLATE_DIR}/bin/arm
-	dl_if_dne "${MODULE_TEMPLATE_DIR}/bin/arm64/cmpr" "https://github.com/j-hc/cmpr/releases/latest/download/cmpr-arm64-v8a"
-	dl_if_dne "${MODULE_TEMPLATE_DIR}/bin/arm/cmpr" "https://github.com/j-hc/cmpr/releases/latest/download/cmpr-armeabi-v7a"
+	dl_if_dne "${MODULE_TEMPLATE_DIR}/bin/arm64/cmpr" "https://github.com/E85Addict/cmpr/releases/latest/download/cmpr-arm64-v8a"
+	dl_if_dne "${MODULE_TEMPLATE_DIR}/bin/arm/cmpr" "https://github.com/E85Addict/cmpr/releases/latest/download/cmpr-armeabi-v7a"
 
 	HTMLQ="${TEMP_DIR}/htmlq"
 	if [ ! -f "$HTMLQ" ]; then
@@ -247,6 +247,7 @@ dl_apkmirror() {
 		fi
 	done
 	[ -z "$dlurl" ] && return 1
+	echo $dlurl
 	url=$(req "$dlurl" - | $HTMLQ --base https://www.apkmirror.com --attribute href "a.btn") || return 1
 	if [ "$apkorbundle" = BUNDLE ] && [[ "$url" != *"&forcebaseapk=true" ]]; then url="${url}&forcebaseapk=true"; fi
 	url=$(req "$url" - | $HTMLQ --base https://www.apkmirror.com --attribute href "span > a[rel = nofollow]") || return 1
@@ -285,6 +286,7 @@ dl_uptodown() {
 	local uptodown_dlurl=$1 version=$2 output=$3
 	local url
 	url=$(grep -F "${version}</span>" -B 2 <<<"$__UPTODOWN_RESP__" | head -1 | sed -n 's;.*data-url=".*download\/\(.*\)".*;\1;p') || return 1
+	echo ${uptodown_dlurl}/download/${url}
 	url="https://dw.uptodown.com/dwn/$(req "${uptodown_dlurl}/post-download/${url}" - | sed -n 's;.*class="post-download" data-url="\(.*\)".*;\1;p')" || return 1
 	req "$url" "$output"
 }
@@ -300,6 +302,7 @@ get_apkmonk_vers() { grep -oP 'download_ver.+?>\K([0-9,\.]*)' <<<"$__APKMONK_RES
 dl_apkmonk() {
 	local url=$1 version=$2 output=$3
 	url="https://www.apkmonk.com/down_file?pkg="$(grep -F "$version</a>" <<<"$__APKMONK_RESP__" | grep -oP 'href=\"/download-app/\K.+?(?=/?\">)' | sed 's;/;\&key=;') || return 1
+	echo $url
 	url=$(req "$url" - | grep -oP 'https.+?(?=\",)') || return 1
 	req "$url" "$output"
 }
@@ -309,6 +312,7 @@ dl_archive() {
 	local url=$1 version=$2 output=$3 arch=$4
 	local path version=${version// /}
 	path=$(grep "${version_f#v}-${arch// /}" <<<"$__ARCHIVE_RESP__") || return 1
+	echo $url
 	req "${url}/${path}" "$output"
 }
 get_archive_resp() {
@@ -324,7 +328,7 @@ get_archive_pkg_name() { echo "$__ARCHIVE_PKG_NAME__"; }
 patch_apk() {
 	local stock_input=$1 patched_apk=$2 patcher_args=$3 rv_cli_jar=$4 rv_patches_jar=$5
 	local cmd="java -jar $rv_cli_jar patch $stock_input -p -o $patched_apk -b $rv_patches_jar \
---keystore=ks.keystore --keystore-entry-password=123456789 --keystore-password=123456789 --signer=jhc --alias=jhc $patcher_args --options=options.json"
+--keystore=ks.keystore --keystore-entry-password=123456789 --keystore-password=123456789 --signer=E85 --alias=E85 $patcher_args --options=options.json"
 	if [ "$OS" = Android ]; then cmd+=" --custom-aapt2-binary=${TEMP_DIR}/aapt2"; fi
 	pr "$cmd"
 	if [ "${DRYRUN:-}" = true ]; then
@@ -338,6 +342,7 @@ patch_apk() {
 build_rv() {
 	eval "declare -A args=${1#*=}"
 	local version build_mode_arr pkg_name
+	local dl_url="https://www.apkmirror.com/"
 	local mode_arg=${args[build_mode]} version_mode=${args[version]}
 	local app_name=${args[app_name]}
 	local app_name_l=${app_name,,}
@@ -395,7 +400,7 @@ build_rv() {
 		for dl_p in archive apkmirror uptodown apkmonk; do
 			if [ -z "${args[${dl_p}_dlurl]}" ]; then continue; fi
 			pr "Downloading '${table}' from ${dl_p}"
-			if ! dl_${dl_p} "${args[${dl_p}_dlurl]}" "$version" "$stock_apk" "$arch" "${args[dpi]}"; then
+			if ! declare -r dl_url=$(dl_${dl_p} "${args[${dl_p}_dlurl]}" "$version" "$stock_apk" "$arch" "${args[dpi]}"); then
 				epr "ERROR: Could not download '${table}' from ${dl_p} with version '${version}', arch '${arch}', dpi '${args[dpi]}'"
 				continue
 			fi
@@ -403,7 +408,18 @@ build_rv() {
 		done
 		if [ ! -f "$stock_apk" ]; then return 0; fi
 	fi
-	log "${table}: ${version}"
+
+    if [ "$dl_from" = apkmirror ]; then
+        dl_from="APKMirror"
+    elif [ "$dl_from" = uptodown ]; then
+        dl_from="Uptodown"
+    elif [ "$dl_from" = apkmonk ]; then
+		dl_from="APKMonk"
+	elif [ "$dl_from" = archive ]; then
+		dl_from="Archive"
+    fi
+
+	log "${table}: ${version}\ndownloaded from: [$dl_from - ${table}]($dl_url)"
 
 	p_patcher_args+=("-m ${args[integ]}")
 	local microg_patch
@@ -418,7 +434,7 @@ build_rv() {
 	# if [ "$mode_arg" = module ] || [ "$mode_arg" = both ]; then
 	# 	if [ -f "$stock_bundle_apk" ]; then
 	# 		is_bundle=true
-	# 	elif [ "$dl_from" = apkmirror ]; then
+	# 	elif [ "$dl_from" = APKMirror ]; then
 	# 		pr "Downloading '${table}' bundle from APKMirror"
 	# 		if dl_apkmirror "${args[apkmirror_dlurl]}" "$version" "$stock_bundle_apk" BUNDLE "" ""; then
 	# 			if (($(stat -c%s "$stock_apk") - $(stat -c%s "$stock_bundle_apk") > 10000000)); then
@@ -546,7 +562,7 @@ module_prop() {
 name=${2}
 version=v${3}
 versionCode=${NEXT_VER_CODE}
-author=j-hc
+author=E85 Addict
 description=${4}" >"${6}/module.prop"
 
 	if [ "$ENABLE_MAGISK_UPDATE" = true ]; then echo "updateJson=${5}" >>"${6}/module.prop"; fi

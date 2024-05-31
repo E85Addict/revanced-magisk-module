@@ -94,9 +94,10 @@ apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/youtube" # fallback
 exclusive-patches = true
 
 [TikTok-Latest]
-enabled = false
+enabled = true
 build-mode = "module"
 apkmirror-dlurl = "https://www.apkmirror.com/apk/tiktok-pte-ltd/tik-tok-including-musical-ly/"
+uptodown-dlurl = "https://tiktok.en.uptodown.com/android"
 included-patches = "'SIM spoof'"
 version = "latest"
 excluded-patches = "'Remember clear display' 'Playback speed'"

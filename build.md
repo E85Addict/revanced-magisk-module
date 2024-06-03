@@ -1,17 +1,17 @@
 Music: 7.03.52
 downloaded from: [Archive - Music](https://archive.org/download/jhc-apks/apks/com.google.android.apps.youtube.music)  
-YouTube: 19.16.39
-downloaded from: [Archive - YouTube](https://archive.org/download/jhc-apks/apks/com.google.android.youtube)  
-Music-Extended: 7.03.51
-downloaded from: [Archive - Music-Extended](https://archive.org/download/jhc-apks/apks/com.google.android.apps.youtube.music)  
 YouTube-Extended: 19.20.34
 downloaded from: [Archive - YouTube-Extended](https://archive.org/download/jhc-apks/apks/com.google.android.youtube)  
 TikTok: 32.5.3
 downloaded from: [APKMirror - TikTok](https://www.apkmirror.com/apk/tiktok-pte-ltd/tik-tok-including-musical-ly/tik-tok-including-musical-ly-32-5-3-release/tiktok-32-5-3-4-android-apk-download/)  
+YouTube: 19.16.39
+downloaded from: [Archive - YouTube](https://archive.org/download/jhc-apks/apks/com.google.android.youtube)  
 YouTube-Custom: 19.16.39
 downloaded from: [Archive - YouTube-Custom](https://www.apkmirror.com/)  
 TikTok-Latest: 35.0.3
 downloaded from: [APKMirror - TikTok-Latest](https://www.apkmirror.com/apk/tiktok-pte-ltd/tik-tok-including-musical-ly/tik-tok-including-musical-ly-35-0-3-release/tiktok-35-0-3-android-apk-download/)  
+Music-Extended: 7.03.51
+downloaded from: [Archive - Music-Extended](https://archive.org/download/jhc-apks/apks/com.google.android.apps.youtube.music)  
 
 Install [Microg](https://github.com/ReVanced/GmsCore/releases) for non-root YouTube and YT Music APKs  
 Use [zygisk-detach](https://github.com/j-hc/zygisk-detach) to detach root ReVanced YouTube and YT Music from Play Store  

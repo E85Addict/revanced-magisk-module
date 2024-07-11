@@ -36,7 +36,7 @@ abort() {
 }
 
 get_rv_prebuilts() {
-	local cli_src=$1 cli_ver=$2 integrations_src=$3 integrations_ver=$4 patches_src=$5 patches_ver=$6
+	local cli_src=$1 cli_ver=$2 integrations_src=$3 integrations_ver=$4 patches_src=$5 patches_ver=$6 prerelease=$7
 	pr "Getting prebuilts (${patches_src%/*})" >&2
 	local cl_dir=${patches_src%/*}
 	cl_dir=${TEMP_DIR}/${cl_dir,,}-rv
@@ -52,6 +52,10 @@ get_rv_prebuilts() {
 		local dir=${src%/*}
 		dir=${TEMP_DIR}/${dir,,}-rv
 		[ -d "$dir" ] || mkdir "$dir"
+
+		if [ "$prerelease" = true ]; then 
+			ver=$(jq -r 'first | .tag_name' <<< $(curl --silent https://api.github.com/repos/${src}/releases))
+		fi
 
 		local rv_rel="https://api.github.com/repos/${src}/releases/"
 		if [ "$ver" ]; then rv_rel+="tags/${ver}"; else rv_rel+="latest"; fi
@@ -226,6 +230,7 @@ dl_apkmirror() {
 		[ -z "$dlurl" ] && return 1
 		resp=$(req "$dlurl" -)
 	fi
+	echo $dlurl
 	url=$(echo "$resp" | $HTMLQ --base https://www.apkmirror.com --attribute href "a.btn") || return 1
 	if [ "$apkorbundle" = BUNDLE ] && [[ $url != *"&forcebaseapk=true" ]]; then url="${url}&forcebaseapk=true"; fi
 	url=$(req "$url" - | $HTMLQ --base https://www.apkmirror.com --attribute href "span > a[rel = nofollow]") || return 1
@@ -284,6 +289,7 @@ dl_uptodown() {
 			break
 		done
 	fi
+	echo ${uptodown_dlurl}/download${url}
 	url="https://dw.uptodown.com/dwn/$(req "${uptodown_dlurl}/post-download${url}" - | sed -n 's;.*class="post-download" data-url="\(.*\)".*;\1;p')" || return 1
 	req "$url" "$output"
 }
@@ -294,6 +300,7 @@ dl_archive() {
 	local url=$1 version=$2 output=$3 arch=$4
 	local path version=${version// /}
 	path=$(grep "${version_f#v}-${arch// /}" <<<"$__ARCHIVE_RESP__") || return 1
+	echo $url
 	req "${url}/${path}" "$output"
 }
 get_archive_resp() {
@@ -309,7 +316,7 @@ get_archive_pkg_name() { echo "$__ARCHIVE_PKG_NAME__"; }
 patch_apk() {
 	local stock_input=$1 patched_apk=$2 patcher_args=$3 rv_cli_jar=$4 rv_patches_jar=$5
 	local cmd="java -jar $rv_cli_jar patch $stock_input -p -o $patched_apk -b $rv_patches_jar  $patcher_args --keystore=ks.keystore \
---keystore-entry-password=123456789 --keystore-password=123456789 --signer=jhc --keystore-entry-alias=jhc --options=options.json"
+--keystore-entry-password=123456789 --keystore-password=123456789 --signer=E85 --keystore-entry-alias=E85 --options=options.json"
 	if [ "$OS" = Android ]; then cmd+=" --custom-aapt2-binary=${AAPT2}"; fi
 	pr "$cmd"
 	eval "$cmd"
@@ -328,6 +335,7 @@ check_sig() {
 build_rv() {
 	eval "declare -A args=${1#*=}"
 	local version build_mode_arr pkg_name
+	local dl_url="https://www.apkmirror.com/"
 	local mode_arg=${args[build_mode]} version_mode=${args[version]}
 	local app_name=${args[app_name]}
 	local app_name_l=${app_name,,}
@@ -385,7 +393,7 @@ build_rv() {
 		for dl_p in archive apkmirror uptodown; do
 			if [ -z "${args[${dl_p}_dlurl]}" ]; then continue; fi
 			pr "Downloading '${table}' from ${dl_p}"
-			if ! dl_${dl_p} "${args[${dl_p}_dlurl]}" "$version" "$stock_apk" "$arch" "${args[dpi]}" "$get_latest_ver"; then
+			if ! declare -r dl_url=$(dl_${dl_p} "${args[${dl_p}_dlurl]}" "$version" "$stock_apk" "$arch" "${args[dpi]}" "$get_latest_ver"); then
 				epr "ERROR: Could not download '${table}' from ${dl_p} with version '${version}', arch '${arch}', dpi '${args[dpi]}'"
 				continue
 			fi
@@ -396,7 +404,16 @@ build_rv() {
 	if ! check_sig "$stock_apk" "$pkg_name"; then
 		abort "apk signature mismatch '$stock_apk'"
 	fi
-	log "${table}: ${version}"
+
+    if [ "$dl_from" = apkmirror ]; then
+        dl_from="APKMirror"
+    elif [ "$dl_from" = uptodown ]; then
+        dl_from="Uptodown"
+	elif [ "$dl_from" = archive ]; then
+		dl_from="Archive"
+    fi
+
+	log "${table}: ${version}\ndownloaded from: [$dl_from - ${table}]($dl_url)"
 
 	p_patcher_args+=("-m ${args[integ]}")
 	local microg_patch
@@ -499,7 +516,7 @@ module_prop() {
 name=${2}
 version=v${3}
 versionCode=${NEXT_VER_CODE}
-author=j-hc
+author=E85 Addict & j-hc
 description=${4}" >"${6}/module.prop"
 
 	if [ "$ENABLE_MAGISK_UPDATE" = true ]; then echo "updateJson=${5}" >>"${6}/module.prop"; fi

@@ -7,7 +7,7 @@ downloaded from: [APKMirror - TikTok](https://www.apkmirror.com/apk/tiktok-pte-l
 YouTube: 19.16.39
 downloaded from: [Archive - YouTube](https://archive.org/download/jhc-apks/apks/com.google.android.youtube)  
 YouTube-Custom: 19.16.39
-downloaded from: [Archive - YouTube-Custom](https://archive.org/download/jhc-apks/apks/com.google.android.youtube)  
+downloaded from: [Archive - YouTube-Custom](https://www.apkmirror.com/)  
 YouTube-Extended: 19.25.39
 downloaded from: [Archive - YouTube-Extended](https://archive.org/download/jhc-apks/apks/com.google.android.youtube)  
 TikTok-Latest: 35.5.4

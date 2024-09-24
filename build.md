@@ -1,13 +1,13 @@
-Music: 7.19.51
-downloaded from: [Archive - Music](https://archive.org/download/jhc-apks/apks/com.google.android.apps.youtube.music)  
+YouTube: 19.16.39
+downloaded from: [Archive - YouTube](https://www.apkmirror.com/apk/google-inc/youtube/youtube-19-16-39-release/youtube-19-16-39-android-apk-download/)  
+YouTube-Extended: 19.16.39
+downloaded from: [Archive - YouTube-Extended](https://www.apkmirror.com/apk/google-inc/youtube/youtube-19-16-39-release/youtube-19-16-39-android-apk-download/)  
 Music-Extended: 7.17.51
 downloaded from: [Archive - Music-Extended](https://archive.org/download/jhc-apks/apks/com.google.android.apps.youtube.music)  
-YouTube: 19.16.39
-downloaded from: [Archive - YouTube](https://archive.org/download/jhc-apks/apks/com.google.android.youtube)  
-YouTube-Extended: 19.16.39
-downloaded from: [Archive - YouTube-Extended](https://archive.org/download/jhc-apks/apks/com.google.android.youtube)  
+Music: 7.19.52
+downloaded from: [Archive - Music](https://archive.org/download/jhc-apks/apks/com.google.android.apps.youtube.music)  
 YouTube-Custom: 19.16.39
-downloaded from: [Archive - YouTube-Custom](https://archive.org/download/jhc-apks/apks/com.google.android.youtube)  
+downloaded from: [Archive - YouTube-Custom](https://www.apkmirror.com/)  
 TikTok: 36.5.4
 downloaded from: [Archive - TikTok](https://archive.org/download/jhc-apks/apks/com.zhiliaoapp.musically)  
 TikTok-Latest: 36.5.4

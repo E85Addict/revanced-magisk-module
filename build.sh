@@ -20,12 +20,13 @@ COMPRESSION_LEVEL=$(toml_get "$main_config_t" compression-level) || COMPRESSION_
 if ! PARALLEL_JOBS=$(toml_get "$main_config_t" parallel-jobs); then
 	if [ "$OS" = Android ]; then PARALLEL_JOBS=1; else PARALLEL_JOBS=$(nproc); fi
 fi
+LOGGING_F=$(toml_get "$main_config_t" logging-to-file) && vtf "$LOGGING_F" "logging-to-file" || LOGGING_F=false
 DEF_PATCHES_VER=$(toml_get "$main_config_t" patches-version) || DEF_PATCHES_VER="latest"
 DEF_INTEGRATIONS_VER=$(toml_get "$main_config_t" integrations-version) || DEF_INTEGRATIONS_VER="latest"
 DEF_CLI_VER=$(toml_get "$main_config_t" cli-version) || DEF_CLI_VER="latest"
 DEF_PATCHES_SRC=$(toml_get "$main_config_t" patches-source) || DEF_PATCHES_SRC="ReVanced/revanced-patches"
 DEF_INTEGRATIONS_SRC=$(toml_get "$main_config_t" integrations-source) || DEF_INTEGRATIONS_SRC="ReVanced/revanced-integrations"
-DEF_CLI_SRC=$(toml_get "$main_config_t" cli-source) || DEF_CLI_SRC="j-hc/revanced-cli"
+DEF_CLI_SRC=$(toml_get "$main_config_t" cli-source) || DEF_CLI_SRC="E85Addict/revanced-cli"
 DEF_RV_BRAND=$(toml_get "$main_config_t" rv-brand) || DEF_RV_BRAND="ReVanced"
 mkdir -p $TEMP_DIR $BUILD_DIR
 
@@ -43,6 +44,7 @@ fi
 # -----------------
 
 if ((COMPRESSION_LEVEL > 9)) || ((COMPRESSION_LEVEL < 0)); then abort "compression-level must be within 0-9"; fi
+if [ "$LOGGING_F" = true ]; then mkdir -p logs; fi
 
 # -- check_deps --
 jq --version >/dev/null || abort "\`jq\` is not installed. install it with 'apt install jq' or equivalent"
@@ -53,6 +55,16 @@ rm -rf revanced-magisk/bin/*/tmp.*
 : >"$TEMP_DIR"/*-rv/changelog.md || :
 
 get_prebuilts
+
+build_rv_w() {
+	if [ "$LOGGING_F" = true ]; then
+		logf=logs/"${table_name,,}.log"
+		: >"$logf"
+		{ build_rv 2>&1 "$(declare -p app_args)" | tee "$logf"; } &
+	else
+		build_rv "$(declare -p app_args)" &
+	fi
+}
 
 declare -A cliriplib
 idx=0
@@ -132,7 +144,7 @@ for table_name in $(toml_get_table_names); do
 	table_name_f=${table_name,,}
 	table_name_f=${table_name_f// /-}
 	app_args[module_prop_name]=$(toml_get "$t" module-prop-name) || {
-		app_args[module_prop_name]="${table_name_f}-jhc"
+		app_args[module_prop_name]="${table_name_f}-E85"
 		if [ "${app_args[arch]}" = "arm64-v8a" ]; then
 			app_args[module_prop_name]="${app_args[module_prop_name]}-arm64"
 		elif [ "${app_args[arch]}" = "arm-v7a" ]; then
@@ -145,7 +157,7 @@ for table_name in $(toml_get_table_names); do
 		app_args[arch]="arm64-v8a"
 		app_args[module_prop_name]="${app_args[module_prop_name]}-arm64"
 		idx=$((idx + 1))
-		build_rv "$(declare -p app_args)" &
+		build_rv_w
 		app_args[table]="$table_name (arm-v7a)"
 		app_args[arch]="arm-v7a"
 		app_args[module_prop_name]="${app_args[module_prop_name]}-arm"
@@ -154,10 +166,10 @@ for table_name in $(toml_get_table_names); do
 			idx=$((idx - 1))
 		fi
 		idx=$((idx + 1))
-		build_rv "$(declare -p app_args)" &
+		build_rv_w
 	else
 		idx=$((idx + 1))
-		build_rv "$(declare -p app_args)" &
+		build_rv_w
 	fi
 done
 wait
@@ -166,7 +178,7 @@ if [ -z "$(ls -A1 "${BUILD_DIR}")" ]; then abort "All builds failed."; fi
 
 log "\nInstall [Microg](https://github.com/ReVanced/GmsCore/releases) for non-root YouTube and YT Music APKs"
 log "Use [zygisk-detach](https://github.com/j-hc/zygisk-detach) to detach root ReVanced YouTube and YT Music from Play Store"
-log "\n[revanced-magisk-module](https://github.com/j-hc/revanced-magisk-module)\n"
+log "\n[revanced-magisk-module](https://github.com/E85Addict/revanced-magisk-module)\n"
 log "$(cat "$TEMP_DIR"/*-rv/changelog.md)"
 
 SKIPPED=$(cat "$TEMP_DIR"/skipped 2>/dev/null || :)

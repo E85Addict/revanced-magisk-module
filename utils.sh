@@ -68,6 +68,9 @@ get_rv_prebuilts() {
 		local url file tag_name name
 		file=$(find "$dir" -name "revanced-${tag,,}-${name_ver#v}.${ext}" -type f 2>/dev/null)
 		if [ -z "$file" ]; then
+  			if [ "$ver" = "latest" ]; then
+				file=$(grep -v dev <<<"$file" | head -1)
+			else file=$(grep "${ver#v}" <<<"$file" | head -1); fi
 			local resp asset name
 			resp=$(gh_req "$rv_rel" -) || return 1
 			if [ "$ver" = "dev" ]; then resp=$(jq -r '.[0]' <<<"$resp"); fi
@@ -80,9 +83,6 @@ get_rv_prebuilts() {
 			if [ "$tag" = "Integrations" ]; then integs_file=$file; fi
 			echo "$tag: $(cut -d/ -f1 <<<"$src")/${name}  " >>"${cl_dir}/changelog.md"
 		else
-			if [ "$ver" = "latest" ]; then
-				file=$(grep -v dev <<<"$file" | head -1)
-			else file=$(grep "${ver#v}" <<<"$file" | head -1); fi
 			name=$(basename "$file")
 			tag_name=$(cut -d'-' -f3- <<<"$name")
 			tag_name=v${tag_name%.*}

@@ -276,6 +276,7 @@ merge_splits() {
 	return $ret
 }
 
+dl_url="https://www.apkmirror.com/"
 # -------------------- apkmirror --------------------
 apk_mirror_search() {
 	local resp="$1" dpi="$2" arch="$3" apk_bundle="$4"
@@ -315,6 +316,7 @@ dl_apkmirror() {
 			[ -z "$dlurl" ] && return 1
 			resp=$(req "$dlurl" -)
 		fi
+		dl_url=$dlurl
 		url=$(echo "$resp" | $HTMLQ --base https://www.apkmirror.com --attribute href "a.btn") || return 1
 		url=$(req "$url" - | $HTMLQ --base https://www.apkmirror.com --attribute href "span > a[rel = nofollow]") || return 1
 	fi
@@ -379,6 +381,7 @@ dl_uptodown() {
 			break
 		done
 	fi
+	dl_url=${uptodown_dlurl}/download${url}
 	url="https://dw.uptodown.com/dwn/$(req "${uptodown_dlurl}/post-download${url}" - | sed -n 's;.*class="post-download" data-url="\(.*\)".*;\1;p')" || return 1
 	req "$url" "$output"
 }
@@ -389,6 +392,7 @@ dl_archive() {
 	local url=$1 version=$2 output=$3 arch=$4
 	local path version=${version// /}
 	path=$(grep "${version_f#v}-${arch// /}" <<<"$__ARCHIVE_RESP__") || return 1
+	dl_url=$url
 	req "${url}/${path}" "$output"
 }
 get_archive_resp() {
@@ -404,7 +408,7 @@ get_archive_pkg_name() { echo "$__ARCHIVE_PKG_NAME__"; }
 patch_apk() {
 	local stock_input=$1 patched_apk=$2 patcher_args=$3 rv_cli_jar=$4 rv_patches_jar=$5
 	local cmd="java -jar $rv_cli_jar patch $stock_input -p -o $patched_apk -b $rv_patches_jar  $patcher_args --keystore=ks.keystore \
---keystore-entry-password=123456789 --keystore-password=123456789 --signer=jhc --keystore-entry-alias=jhc --options=options.json"
+--keystore-entry-password=123456789 --keystore-password=123456789 --signer=E85 --keystore-entry-alias=E85 --options=options.json"
 	if [ "$OS" = Android ]; then cmd+=" --custom-aapt2-binary=${AAPT2}"; fi
 	pr "$cmd"
 	if eval "$cmd"; then [ -f "$patched_apk" ]; else
@@ -505,7 +509,16 @@ build_rv() {
 	if ! check_sig "$stock_apk" "$pkg_name"; then
 		abort "apk signature mismatch '$stock_apk'"
 	fi
-	log "${table}: ${version}"
+
+    if [ "$dl_from" = apkmirror ]; then
+        dl_from="APKMirror"
+    elif [ "$dl_from" = uptodown ]; then
+        dl_from="Uptodown"
+	elif [ "$dl_from" = archive ]; then
+		dl_from="Archive"
+    fi
+
+	log "${table}: ${version}\ndownloaded from: [$dl_from - ${table}]($dl_url)"
 
 	p_patcher_args+=("-m ${args[integ]}")
 	local microg_patch
@@ -599,7 +612,7 @@ module_prop() {
 name=${2}
 version=v${3} (${NEXT_VER_CODE})
 versionCode=${NEXT_VER_CODE}
-author=j-hc
+author=E85 Addict & j-hc
 description=${4}" >"${6}/module.prop"
 
 	if [ "$ENABLE_MAGISK_UPDATE" = true ]; then echo "updateJson=${5}" >>"${6}/module.prop"; fi

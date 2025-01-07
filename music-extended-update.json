@@ -1,6 +1,6 @@
 {
-  "version": "v7.25.53 (patches: 5.1.3)",
-  "versionCode": 20250000,
-  "zipUrl": "https://github.com/E85Addict/revanced-magisk-module/releases/download/20250000/music-revanced-extended-magisk-v7.25.53-arm64-v8a.zip",
+  "version": "v7.25.53 (patches: 5.2.1)",
+  "versionCode": 20250001,
+  "zipUrl": "https://github.com/E85Addict/revanced-magisk-module/releases/download/20250001/music-revanced-extended-magisk-v7.25.53-arm64-v8a.zip",
   "changelog": "https://raw.githubusercontent.com/E85Addict/revanced-magisk-module/update/build.md"
 }

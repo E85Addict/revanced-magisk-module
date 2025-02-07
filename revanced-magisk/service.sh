@@ -34,15 +34,15 @@ run() {
 		err "version mismatch (installed:${VERSION}, module:$PKG_VER)"
 		return
 	fi
-	mz grep "$PKG_NAME" /proc/mounts | while read -r line; do
+	mm grep "$PKG_NAME" /proc/mounts | while read -r line; do
 		mp=${line#* } mp=${mp%% *}
-		mz umount -l "${mp%%\\*}"
+		mm umount -l "${mp%%\\*}"
 	done
 	if ! chcon u:object_r:apk_data_file:s0 "$RVPATH"; then
 		err "apk not found"
 		return
 	fi
-	mz mount "$RVPATH" "$BASEPATH/base.apk"
+	mm mount -o bind "$RVPATH" "$BASEPATH/base.apk"
 	am force-stop "$PKG_NAME"
 	[ -f "$MODDIR/err" ] && mv -f "$MODDIR/err" "$MODDIR/module.prop"
 }

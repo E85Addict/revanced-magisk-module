@@ -20,5 +20,5 @@ Patches: ReVanced/patches-5.11.0.rvp
 [Changelog](https://github.com/ReVanced/revanced-patches/releases/tag/v5.11.0)  
 
 Skipped:  
-Patches: Aunali321/patches-1.6.1.rvp  
-Patches: inotia00/patches-5.3.1.rvp      
+Patches: Aunali321/patches-1.6.0.rvp  
+Patches: inotia00/patches-5.3.0.rvp      

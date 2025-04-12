@@ -39,7 +39,10 @@ apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/photos/"
 uptodown-dlurl = "https://google-photos.en.uptodown.com/android"
 
 [Spotify]
-enabled = false
+enabled = true
+build-mode = "both"
+version = "auto"
+archive-dlurl = "https://archive.org/download/e85-apks/apks/com.spotify.music"
 uptodown-dlurl = "https://spotify.en.uptodown.com/android"
 
 # dont build on gh actions (https://github.com/j-hc/revanced-magisk-module/issues/554)
@@ -86,11 +89,13 @@ dpi = "120-640dpi"
 [TikTok]
 enabled = true
 build-mode = "both"
-version = "37.0.4"
+version = "latest"
+patches-source = "E85Addict/revanced-patches"
 apkmirror-dlurl = "https://www.apkmirror.com/apk/tiktok-pte-ltd/tik-tok-including-musical-ly/"
-uptodown-dlurl = "https://tiktok.en.uptodown.com/android"
-archive-dlurl = "https://archive.org/download/e85-apks/apks/com.zhiliaoapp.musically"
-included-patches = "'SIM spoof'"
+# uptodown-dlurl = "https://tiktok.en.uptodown.com/android"
+# archive-dlurl = "https://archive.org/download/e85-apks/apks/com.zhiliaoapp.musically"
+# included-patches = "'SIM spoof'"
+excluded-patches = "'Remember clear display'"
 
 [Messenger]
 enabled = false

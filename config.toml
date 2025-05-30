@@ -1,28 +1,37 @@
-enable-magisk-update = true # set this to false if you do not want to receive updates for the module in magisk app
+logging-to-file = true        # enables logging of every patch process to a seperate file
+enable-magisk-update = true   # set this to false if you do not want to receive updates for the module in magisk app
 parallel-jobs = 1
 
 # add 'enabled = false' for not patching a specific app or remove it from the config
-# see https://github.com/j-hc/revanced-magisk-module/blob/main/CONFIG.md for more detailed explanations
+# see https://github.com/E85Addict/revanced-magisk-module/blob/main/CONFIG.md for more detailed explanations
 
 # you can use rvmm-config-gen to generate a config
 
 [YouTube]
+enabled = true
 build-mode = "both"
+module-prop-name = "youtube-E85"
+patches-source = "E85Addict/revanced-patches"
 excluded-patches = ""
 included-patches = ""
+patcher-args = ""
 version = "auto"
 apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/youtube"
 uptodown-dlurl = "https://youtube.en.uptodown.com/android"
-archive-dlurl = "https://archive.org/download/jhc-apks/apks/com.google.android.youtube"
+# archive-dlurl = "https://archive.org/download/jhc-apks/apks/com.google.android.youtube"
 
 [Music]
+enabled = true
 build-mode = "both"
-arch = "both"
+module-prop-name = "music-E85"
+arch = "arm64-v8a"
+patches-source = "E85Addict/revanced-patches"
 apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/youtube-music"
 uptodown-dlurl = "https://youtube-music.en.uptodown.com/android"
-archive-dlurl = "https://archive.org/download/jhc-apks/apks/com.google.android.apps.youtube.music"
+# archive-dlurl = "https://archive.org/download/jhc-apks/apks/com.google.android.apps.youtube.music"
 
 [GooglePhotos]
+enabled = false
 build-mode = "both"
 arch = "both"
 version = "auto"
@@ -30,27 +39,36 @@ apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/photos/"
 uptodown-dlurl = "https://google-photos.en.uptodown.com/android"
 
 [Spotify]
+enabled = true
+build-mode = "both"
+version = "auto"
 uptodown-dlurl = "https://spotify.en.uptodown.com/android"
-archive-dlurl = "https://archive.org/download/jhc-apks/apks/com.spotify.music"
+archive-dlurl = "https://archive.org/download/e85-apks/apks/com.spotify.music"
 
 # https://github.com/j-hc/revanced-magisk-module/issues/554
 [Music-Extended]
-enabled = false
+enabled = true
 app-name = "Music"
 patches-source = "inotia00/revanced-patches"
 cli-source = "inotia00/revanced-cli"
 rv-brand = "ReVanced Extended"
 build-mode = "both"
-arch = "both"
+module-prop-name = "music-E85"
+arch = "arm64-v8a"
+included-patches = "'Custom header for YouTube Music'"
+patcher-args = "--legacy-options options.json"
 apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/youtube-music"
 
 [YouTube-Extended]
-enabled = false
+enabled = true
 app-name = "YouTube"
 patches-source = "inotia00/revanced-patches"
 cli-source = "inotia00/revanced-cli"
 rv-brand = "ReVanced Extended"
 build-mode = "both"
+module-prop-name = "youtube-E85"
+included-patches = "'Custom header for YouTube'"
+patcher-args = "--legacy-options options.json"
 apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/youtube"
 
 [Twitch]
@@ -67,9 +85,15 @@ dpi = "120-640dpi"
 # archive-dlurl = "https://archive.org/download/jhc-apks/apks/com.twitter.android"
 
 [TikTok]
-enabled = false
-# archive-dlurl = "https://archive.org/download/jhc-apks/apks/com.zhiliaoapp.musically"
-included-patches = "'SIM spoof'"
+enabled = true
+build-mode = "both"
+version = "latest"
+patches-source = "E85Addict/revanced-patches"
+apkmirror-dlurl = "https://www.apkmirror.com/apk/tiktok-pte-ltd/tik-tok-including-musical-ly/"
+uptodown-dlurl = "https://tiktok.en.uptodown.com/android"
+# archive-dlurl = "https://archive.org/download/e85-apks/apks/com.zhiliaoapp.musically"
+# included-patches = "'SIM spoof'"
+excluded-patches = "'Remember clear display'"
 
 [Messenger]
 enabled = false
@@ -79,3 +103,20 @@ arch = "arm64-v8a"
 [IconPackStudio]
 enabled = false
 apkmirror-dlurl = "https://www.apkmirror.com/apk/smart-launcher-team/icon-pack-studio/"
+
+[YouTube-Custom]
+enabled = true
+exclusive-patches = true
+module-prop-name = "youtube-E85"
+build-mode = "module"
+patches-source = "E85Addict/revanced-patches"
+included-patches = """\
+    'Custom branding' 'Change header' 'Disable precise seeking gesture' 'Remove background playback restrictions' \
+    'Seekbar tapping' 'Video ads' 'Hide ads' 'Enable tablet layout' 'Restore old video quality menu' 'Seekbar thumbnails' \
+    'Return YouTube Dislike' 'Miniplayer' 'Theme' 'SponsorBlock' \
+    """
+patcher-args = ""
+version = "auto"
+apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/youtube"
+uptodown-dlurl = "https://youtube.en.uptodown.com/android"
+# archive-dlurl = "https://archive.org/download/e85-apks/apks/com.google.android.youtube"

@@ -85,7 +85,7 @@ dpi = "120-640dpi"
 # archive-dlurl = "https://archive.org/download/jhc-apks/apks/com.twitter.android"
 
 [TikTok]
-enabled = true
+enabled = false
 build-mode = "both"
 version = "latest"
 patches-source = "E85Addict/revanced-patches"

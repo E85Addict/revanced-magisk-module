@@ -21,7 +21,7 @@ Patches: E85Addict/patches-5.27.0.rvp
 Patches: E85Addicts/patches-5.27.0.rvp  
 [Changelog](https://github.com/E85Addicts/revanced-patches/releases/tag/v5.27.0)
 
-Patches: ReVanced/patches-5.27.0.rvp  
+Patches: ReVanced/patches-5.26.0.rvp  
 [Changelog](https://github.com/ReVanced/revanced-patches/releases/tag/v5.27.0)  
 
 Skipped:  

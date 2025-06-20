@@ -1,6 +1,6 @@
 {
-  "version": "v20.12.46 (patches 5.27.0)",
-  "versionCode": 20250039,
-  "zipUrl": "https://github.com/E85Addict/revanced-magisk-module/releases/download/20250039/youtube-custom-revanced-magisk-v20.12.46-all.zip",
+  "version": "v20.12.46 (patches 5.28.0)",
+  "versionCode": 20250041,
+  "zipUrl": "https://github.com/E85Addict/revanced-magisk-module/releases/download/20250041/youtube-custom-revanced-magisk-v20.12.46-all.zip",
   "changelog": "https://raw.githubusercontent.com/E85Addict/revanced-magisk-module/update/build.md"
 }

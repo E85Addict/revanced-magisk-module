@@ -13,4 +13,4 @@ Patches: ReVanced/patches-5.29.0.rvp
 Skipped:  
 Patches: E85Addict/patches-5.29.0.rvp  
 Patches: inotia00/patches-5.6.2.rvp            
-Patches: E85Addicts/patches-5.29.0.rvp    
+Patches: E85Addicts/patches-5.28.0.rvp    

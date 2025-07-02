@@ -1,6 +1,6 @@
 {
-  "version": "v40.6.3 (patches 5.29.0)",
-  "versionCode": 20250046,
-  "zipUrl": "https://github.com/E85Addict/revanced-magisk-module/releases/download/20250046/tiktok-revanced-magisk-v40.6.3-all.zip",
+  "version": "v40.6.3 (patches 5.30.0)",
+  "versionCode": 20250048,
+  "zipUrl": "https://github.com/E85Addict/revanced-magisk-module/releases/download/20250048/tiktok-revanced-magisk-v40.6.3-all.zip",
   "changelog": "https://raw.githubusercontent.com/E85Addict/revanced-magisk-module/update/build.md"
 }

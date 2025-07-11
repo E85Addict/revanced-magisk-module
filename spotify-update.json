@@ -1,6 +1,6 @@
 {
-  "version": "v9.0.58.596 (patches 5.31.0)",
-  "versionCode": 20250049,
-  "zipUrl": "https://github.com/E85Addict/revanced-magisk-module/releases/download/20250049/spotify-revanced-magisk-v9.0.58.596-all.zip",
+  "version": "v9.0.60.614 (patches 5.31.1)",
+  "versionCode": 20250050,
+  "zipUrl": "https://github.com/E85Addict/revanced-magisk-module/releases/download/20250050/spotify-revanced-magisk-v9.0.60.614-all.zip",
   "changelog": "https://raw.githubusercontent.com/E85Addict/revanced-magisk-module/update/build.md"
 }

@@ -22,7 +22,7 @@ CLI: E85Addict/revanced-cli-5.0.1-all.jar
 Patches: E85Addict/patches-5.34.0.rvp  
 [Changelog](https://github.com/E85Addict/revanced-patches/releases/tag/v5.34.0)
 
-Patches: E85Addicts/patches-5.34.0.rvp  
+Patches: E85Addicts/patches-5.33.0.rvp  
 [Changelog](https://github.com/E85Addicts/revanced-patches/releases/tag/v5.34.0)
 
 CLI: inotia00/revanced-cli-5.0.1-all.jar  

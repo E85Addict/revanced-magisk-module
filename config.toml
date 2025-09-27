@@ -87,7 +87,7 @@ dpi = "120-640dpi"
 [TikTok]
 enabled = true
 build-mode = "both"
-version = "latest"
+version = "41.6.3"
 patches-source = "E85Addicts/revanced-patches"
 # apkmirror-dlurl = "https://www.apkmirror.com/apk/tiktok-pte-ltd/tik-tok-including-musical-ly/"
 uptodown-dlurl = "https://tiktok.en.uptodown.com/android"

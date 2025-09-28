@@ -11,10 +11,12 @@ parallel-jobs = 1
 enabled = true
 build-mode = "both"
 module-prop-name = "youtube-E85"
-patches-source = "E85Addict/revanced-patches"
 excluded-patches = ""
 included-patches = ""
-patcher-args = "-e 'Change header' -Ocustom=custom_header/ "
+patcher-args = """\
+    -e 'Change header' -Ocustom=logos/vanced_og_header/ \
+    -e 'Custom branding' -OappName='YouTube' -OiconPath=logos/vanced_og_launcher/ \
+    """
 version = "auto"
 apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/youtube"
 uptodown-dlurl = "https://youtube.en.uptodown.com/android"
@@ -25,7 +27,9 @@ enabled = true
 build-mode = "both"
 module-prop-name = "music-E85"
 arch = "arm64-v8a"
-patches-source = "E85Addict/revanced-patches"
+patcher-args = """\
+    -e 'Custom branding' -OappName='YouTube Music' -OiconPath=logos/vanced_og_music_launcher/ \
+    """
 apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/youtube-music"
 uptodown-dlurl = "https://youtube-music.en.uptodown.com/android"
 # archive-dlurl = "https://archive.org/download/jhc-apks/apks/com.google.android.apps.youtube.music"
@@ -109,13 +113,15 @@ enabled = true
 exclusive-patches = true
 module-prop-name = "youtube-E85"
 build-mode = "module"
-patches-source = "E85Addict/revanced-patches"
 included-patches = """\
-    'Custom branding' 'Change header' 'Seekbar' 'Remove background playback restrictions' \
+    'Custom branding' 'Seekbar' 'Remove background playback restrictions' \
     'Video ads' 'Hide ads' 'Video quality' 'Theme' 'Change form factor' \
     'Return YouTube Dislike' 'Miniplayer' 'SponsorBlock' \
     """
-patcher-args = "-e 'Change header' -Ocustom=custom_header/ "
+patcher-args = """\
+    -e 'Change header' -Ocustom=logos/vanced_og_header/ \
+    -e 'Custom branding' -OappName='YouTube' -OiconPath=logos/vanced_og_launcher/ \
+    """
 version = "auto"
 apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/youtube"
 uptodown-dlurl = "https://youtube.en.uptodown.com/android"

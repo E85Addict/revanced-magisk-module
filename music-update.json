@@ -1,6 +1,6 @@
 {
   "version": "v8.10.52 (patches 5.46.0)",
-  "versionCode": 20250085,
-  "zipUrl": "https://github.com/E85Addict/revanced-magisk-module/releases/download/20250085/music-revanced-magisk-v8.10.52-arm64-v8a.zip",
+  "versionCode": 20250087,
+  "zipUrl": "https://github.com/E85Addict/revanced-magisk-module/releases/download/20250087/music-revanced-magisk-v8.10.52-arm64-v8a.zip",
   "changelog": "https://raw.githubusercontent.com/E85Addict/revanced-magisk-module/update/build.md"
 }

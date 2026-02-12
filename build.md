@@ -17,4 +17,4 @@ CLI: MorpheApp/morphe-cli-1.3.0-all.jar 
 Skipped:  
 Patches: ReVanced/patches-5.48.0.rvp  
 Patches: inotia00/patches-5.14.1.rvp    
-Patches: E85Addicts/patches-5.48.0.rvp            
+Patches: E85Addicts/patches-5.47.0.rvp            

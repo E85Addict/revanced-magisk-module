@@ -13,4 +13,4 @@ Patches: E85Addicts/patches-5.48.0.rvp 
 Skipped:  
 Patches: ReVanced/patches-5.48.0.rvp  
 Patches: inotia00/patches-5.14.1.rvp    
-Patches: MorpheApp/patches-1.12.0.mpp    
+Patches: MorpheApp/patches-1.11.0.mpp    

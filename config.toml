@@ -79,7 +79,7 @@ apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/youtube"
 [YouTube-Morphe]
 enabled = true
 app-name = "YouTube"
-github-release-dlurl = "https://github.com/AzyrRuthless/YTYTM-APK/releases/latest"
+github-release-dlurl = "https://github.com/E85Addict/APKs/releases/latest"
 apkmirror-dlurl = "https://apkmirror.com/apk/google-inc/youtube"
 uptodown-dlurl = "https://youtube.en.uptodown.com/android"
 build-mode = "both"
@@ -95,7 +95,7 @@ rv-brand = "Morphe"
 [Music-Morphe]
 enabled = true
 app-name = "Music"
-github-release-dlurl = "https://github.com/AzyrRuthless/YTYTM-APK/releases/latest"
+github-release-dlurl = "https://github.com/E85Addict/APKs/releases/latest"
 apkmirror-dlurl = "https://apkmirror.com/apk/google-inc/youtube-music"
 uptodown-dlurl = "https://youtube-music.en.uptodown.com/android"
 build-mode = "both"
@@ -124,13 +124,11 @@ dpi = "120-640dpi"
 [TikTok]
 enabled = true
 build-mode = "both"
-version = "41.6.3"
 patches-source = "E85Addicts/revanced-patches"
-# apkmirror-dlurl = "https://www.apkmirror.com/apk/tiktok-pte-ltd/tik-tok-including-musical-ly/"
+github-release-dlurl = "https://github.com/E85Addict/APKs/releases/latest"
+apkmirror-dlurl = "https://www.apkmirror.com/apk/tiktok-pte-ltd/tik-tok-including-musical-ly/"
 uptodown-dlurl = "https://tiktok.en.uptodown.com/android"
 # archive-dlurl = "https://archive.org/download/e85-apks/apks/com.zhiliaoapp.musically"
-# included-patches = "'SIM spoof'"
-excluded-patches = "'Remember clear display'"
 
 [Messenger]
 enabled = false

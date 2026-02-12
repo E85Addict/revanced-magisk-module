@@ -79,6 +79,7 @@ apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/youtube"
 [YouTube-Morphe]
 enabled = true
 app-name = "YouTube"
+github-release-dlurl = "https://github.com/AzyrRuthless/YTYTM-APK/releases/latest"
 apkmirror-dlurl = "https://apkmirror.com/apk/google-inc/youtube"
 uptodown-dlurl = "https://youtube.en.uptodown.com/android"
 build-mode = "both"
@@ -94,6 +95,7 @@ rv-brand = "Morphe"
 [Music-Morphe]
 enabled = true
 app-name = "Music"
+github-release-dlurl = "https://github.com/AzyrRuthless/YTYTM-APK/releases/latest"
 apkmirror-dlurl = "https://apkmirror.com/apk/google-inc/youtube-music"
 uptodown-dlurl = "https://youtube-music.en.uptodown.com/android"
 build-mode = "both"

@@ -158,3 +158,10 @@ version = "auto"
 apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/youtube"
 uptodown-dlurl = "https://youtube.en.uptodown.com/android"
 # archive-dlurl = "https://archive.org/download/e85-apks/apks/com.google.android.youtube"
+
+[Pandora]
+enabled = true
+build-mode = "both"
+version = "auto"
+patches-source = "ReVanced/revanced-patches"
+apkmirror-dlurl = "https://www.apkmirror.com/apk/pandora/pandora-music-podcasts/"

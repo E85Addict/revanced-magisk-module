@@ -18,9 +18,10 @@ patcher-args = """\
     -e 'Custom branding' -OcustomName='YouTube' -OcustomIcon=logos/vanced_og_launcher/ \
     """
 version = "auto"
-apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/youtube"
+archive-dlurl = "https://archive.org/download/e85-apks/apks/com.google.android.youtube"
+github-release-dlurl = "https://github.com/E85Addict/APKs/releases/latest"
+apkmirror-dlurl = "https://apkmirror.com/apk/google-inc/youtube"
 uptodown-dlurl = "https://youtube.en.uptodown.com/android"
-# archive-dlurl = "https://archive.org/download/jhc-apks/apks/com.google.android.youtube"
 
 [Music]
 enabled = true
@@ -30,9 +31,10 @@ arch = "arm64-v8a"
 patcher-args = """\
     -e 'Custom branding' -OcustomName='YouTube Music' -OcustomIcon=logos/vanced_og_music_launcher/ \
     """
-apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/youtube-music"
+archive-dlurl = "https://archive.org/download/e85-apks/apks/com.google.android.apps.youtube.music"
+github-release-dlurl = "https://github.com/E85Addict/APKs/releases/latest"
+apkmirror-dlurl = "https://apkmirror.com/apk/google-inc/youtube-music"
 uptodown-dlurl = "https://youtube-music.en.uptodown.com/android"
-# archive-dlurl = "https://archive.org/download/jhc-apks/apks/com.google.android.apps.youtube.music"
 
 [GooglePhotos]
 enabled = false
@@ -62,7 +64,10 @@ module-prop-name = "music-E85"
 arch = "arm64-v8a"
 included-patches = "'Custom header for YouTube Music'"
 patcher-args = "--legacy-options options.json"
-apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/youtube-music"
+archive-dlurl = "https://archive.org/download/e85-apks/apks/com.google.android.apps.youtube.music"
+github-release-dlurl = "https://github.com/E85Addict/APKs/releases/latest"
+apkmirror-dlurl = "https://apkmirror.com/apk/google-inc/youtube-music"
+uptodown-dlurl = "https://youtube-music.en.uptodown.com/android"
 
 [YouTube-Extended]
 enabled = true
@@ -74,7 +79,10 @@ build-mode = "both"
 module-prop-name = "youtube-E85"
 included-patches = "'Custom header for YouTube'"
 patcher-args = "--legacy-options options.json"
-apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/youtube"
+archive-dlurl = "https://archive.org/download/e85-apks/apks/com.google.android.youtube"
+github-release-dlurl = "https://github.com/E85Addict/APKs/releases/latest"
+apkmirror-dlurl = "https://apkmirror.com/apk/google-inc/youtube"
+uptodown-dlurl = "https://youtube.en.uptodown.com/android"
 
 [YouTube-Morphe]
 enabled = true
@@ -129,7 +137,7 @@ build-mode = "both"
 patches-source = "E85Addicts/revanced-patches"
 apkmirror-dlurl = "https://www.apkmirror.com/apk/tiktok-pte-ltd/tik-tok-including-musical-ly/"
 uptodown-dlurl = "https://tiktok.en.uptodown.com/android"
-# archive-dlurl = "https://archive.org/download/e85-apks/apks/com.zhiliaoapp.musically"
+archive-dlurl = "https://archive.org/download/e85-apks/apks/com.zhiliaoapp.musically"
 
 [Messenger]
 enabled = false
@@ -155,9 +163,10 @@ patcher-args = """\
     -e 'Custom branding' -OcustomName='YouTube' -OcustomIcon=logos/vanced_og_launcher/ \
     """
 version = "auto"
-apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/youtube"
+archive-dlurl = "https://archive.org/download/e85-apks/apks/com.google.android.youtube"
+github-release-dlurl = "https://github.com/E85Addict/APKs/releases/latest"
+apkmirror-dlurl = "https://apkmirror.com/apk/google-inc/youtube"
 uptodown-dlurl = "https://youtube.en.uptodown.com/android"
-# archive-dlurl = "https://archive.org/download/e85-apks/apks/com.google.android.youtube"
 
 [Pandora]
 enabled = true
@@ -165,3 +174,4 @@ build-mode = "both"
 version = "auto"
 patches-source = "ReVanced/revanced-patches"
 apkmirror-dlurl = "https://www.apkmirror.com/apk/pandora/pandora-music-podcasts/"
+archive-dlurl = "https://archive.org/download/e85-apks/apks/com.pandora.android"

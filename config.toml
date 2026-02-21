@@ -1,48 +1,80 @@
+logging-to-file = true      # enables logging of every patch process to a seperate file
 enable-module-update = true # set this to false if you do not want to receive updates for the module
 parallel-jobs = 1
 
 # add 'enabled = false' for not patching a specific app or remove it from the config
-# see https://github.com/j-hc/revanced-magisk-module/blob/main/CONFIG.md for more detailed explanations
+# see https://github.com/E85Addict/revanced-magisk-module/blob/main/CONFIG.md for more detailed explanations
 
 # you can use rvmm-config-gen to generate a config
 
 [YouTube]
+enabled = true
 build-mode = "both"
-apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/youtube"
+module-prop-name = "youtube-E85"
+excluded-patches = ""
+included-patches = ""
+patcher-args = """\
+    -e 'Change header' -Ocustom=logos/vanced_og_header/ \
+    -e 'Custom branding' -OcustomName='YouTube' -OcustomIcon=logos/vanced_og_launcher/ \
+    """
+version = "auto"
+archive-dlurl = "https://archive.org/download/e85-apks/apks/com.google.android.youtube"
+github-release-dlurl = "https://github.com/E85Addict/APKs/releases/latest"
+apkmirror-dlurl = "https://apkmirror.com/apk/google-inc/youtube"
 uptodown-dlurl = "https://youtube.en.uptodown.com/android"
-archive-dlurl = "https://archive.org/download/jhc-apks/apks/com.google.android.youtube"
 
 [YouTube-Morphe]
+enabled = true
 app-name = "YouTube"
+archive-dlurl = "https://archive.org/download/e85-apks/apks/com.google.android.youtube"
+github-release-dlurl = "https://github.com/E85Addict/APKs/releases/latest"
+apkmirror-dlurl = "https://apkmirror.com/apk/google-inc/youtube"
+uptodown-dlurl = "https://youtube.en.uptodown.com/android"
+build-mode = "both"
+module-prop-name = "youtube-E85"
+patcher-args = """\
+    -e 'Change header' -Ocustom=logos/vanced_og_header/ \
+    -e 'Custom branding' -OcustomName='YouTube' -OcustomIcon=logos/vanced_og_launcher/ \
+    """
 patches-source = "MorpheApp/morphe-patches"
 cli-source = "MorpheApp/morphe-cli"
 rv-brand = "Morphe"
-build-mode = "both"
-apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/youtube"
-uptodown-dlurl = "https://youtube.en.uptodown.com/android"
-archive-dlurl = "https://archive.org/download/jhc-apks/apks/com.google.android.youtube"
 
 [Music]
+enabled = true
 build-mode = "both"
-arch = "both"
-apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/youtube-music"
+module-prop-name = "music-E85"
+arch = "arm64-v8a"
+patcher-args = """\
+    -e 'Custom branding' -OcustomName='YouTube Music' -OcustomIcon=logos/vanced_og_music_launcher/ \
+    """
+archive-dlurl = "https://archive.org/download/e85-apks/apks/com.google.android.apps.youtube.music"
+github-release-dlurl = "https://github.com/E85Addict/APKs/releases/latest"
+apkmirror-dlurl = "https://apkmirror.com/apk/google-inc/youtube-music"
 uptodown-dlurl = "https://youtube-music.en.uptodown.com/android"
-archive-dlurl = "https://archive.org/download/jhc-apks/apks/com.google.android.apps.youtube.music"
 
 [Music-Morphe]
+enabled = true
 app-name = "Music"
+archive-dlurl = "https://archive.org/download/e85-apks/apks/com.google.android.apps.youtube.music"
+github-release-dlurl = "https://github.com/E85Addict/APKs/releases/latest"
+apkmirror-dlurl = "https://apkmirror.com/apk/google-inc/youtube-music"
+uptodown-dlurl = "https://youtube-music.en.uptodown.com/android"
+build-mode = "both"
+module-prop-name = "music-E85"
+patcher-args = """\
+    -e 'Custom branding' -OcustomName='YouTube Music' -OcustomIcon=logos/vanced_og_music_launcher/ \
+    """
+arch = "arm64-v8a"
 patches-source = "MorpheApp/morphe-patches"
 cli-source = "MorpheApp/morphe-cli"
 rv-brand = "Morphe"
-build-mode = "both"
-arch = "both"
-apkmirror-dlurl = "https://www.apkmirror.com/apk/google-inc/youtube-music"
-uptodown-dlurl = "https://youtube-music.en.uptodown.com/android"
-archive-dlurl = "https://archive.org/download/jhc-apks/apks/com.google.android.apps.youtube.music"
 
 [Reddit-Morphe]
+enabled = true
 app-name = "Reddit"
 rv-brand = "Morphe"
+build-mode = "both"
 patches-source = "MorpheApp/morphe-patches"
 cli-source = "MorpheApp/morphe-cli"
 apkmirror-dlurl = "https://www.apkmirror.com/apk/redditinc/reddit/"
@@ -60,8 +92,10 @@ archive-dlurl = "https://archive.org/download/jhc-apks/apks/com.google.android.a
 
 [Spotify]
 enabled = false
+build-mode = "both"
+version = "auto"
 uptodown-dlurl = "https://spotify.en.uptodown.com/android"
-archive-dlurl = "https://archive.org/download/jhc-apks/apks/com.spotify.music"
+archive-dlurl = "https://archive.org/download/e85-apks/apks/com.spotify.music"
 
 [Twitch]
 enabled = false
@@ -77,9 +111,12 @@ dpi = "120-640dpi"
 # archive-dlurl = "https://archive.org/download/jhc-apks/apks/com.twitter.android"
 
 [TikTok]
-enabled = false
-# archive-dlurl = "https://archive.org/download/jhc-apks/apks/com.zhiliaoapp.musically"
-included-patches = "'SIM spoof'"
+enabled = true
+build-mode = "both"
+patches-source = "E85Addicts/revanced-patches"
+apkmirror-dlurl = "https://www.apkmirror.com/apk/tiktok-pte-ltd/tik-tok-including-musical-ly/"
+uptodown-dlurl = "https://tiktok.en.uptodown.com/android"
+archive-dlurl = "https://archive.org/download/e85-apks/apks/com.zhiliaoapp.musically"
 
 [Messenger]
 enabled = false
@@ -89,3 +126,31 @@ arch = "arm64-v8a"
 [IconPackStudio]
 enabled = false
 apkmirror-dlurl = "https://www.apkmirror.com/apk/smart-launcher-team/icon-pack-studio/"
+
+[YouTube-Custom]
+enabled = true
+exclusive-patches = true
+module-prop-name = "youtube-E85"
+build-mode = "module"
+included-patches = """\
+    'Custom branding' 'Seekbar' 'Remove background playback restrictions' \
+    'Video ads' 'Hide ads' 'Video quality' 'Theme' 'Change form factor' \
+    'Return YouTube Dislike' 'Miniplayer' 'SponsorBlock' \
+    """
+patcher-args = """\
+    -e 'Change header' -Ocustom=logos/vanced_og_header/ \
+    -e 'Custom branding' -OcustomName='YouTube' -OcustomIcon=logos/vanced_og_launcher/ \
+    """
+version = "auto"
+archive-dlurl = "https://archive.org/download/e85-apks/apks/com.google.android.youtube"
+github-release-dlurl = "https://github.com/E85Addict/APKs/releases/latest"
+apkmirror-dlurl = "https://apkmirror.com/apk/google-inc/youtube"
+uptodown-dlurl = "https://youtube.en.uptodown.com/android"
+
+[Pandora]
+enabled = true
+build-mode = "both"
+version = "auto"
+patches-source = "ReVanced/revanced-patches"
+apkmirror-dlurl = "https://www.apkmirror.com/apk/pandora/pandora-music-podcasts/"
+archive-dlurl = "https://archive.org/download/e85-apks/apks/com.pandora.android"

@@ -307,6 +307,7 @@ merge_splits() {
 	return $ret
 }
 
+dl_url="https://www.apkmirror.com/"
 # -------------------- apkmirror --------------------
 apkmirror_search() {
 	local resp="$1" dpi="$2" arch="$3" apk_bundle="$4"
@@ -360,6 +361,7 @@ dl_apkmirror() {
 			[ -z "$dlurl" ] && return 1
 			resp=$(req "$dlurl" -)
 		fi
+		dl_url=$dlurl
 		url=$(echo "$resp" | $HTMLQ --base https://www.apkmirror.com --attribute href "a.btn") || return 1
 		url=$(req "$url" - | $HTMLQ --base https://www.apkmirror.com --attribute href "span > a[rel = nofollow]") || return 1
 	fi
@@ -444,6 +446,7 @@ dl_uptodown() {
 		done
 		if [ $n -eq 12 ]; then return 1; fi
 	fi
+	dl_url=$versionURL
 	local data_url
 	data_url=$($HTMLQ "#detail-download-button" --attribute data-url <<<"$resp") || return 1
 	if [ $is_bundle = true ]; then
@@ -460,6 +463,7 @@ dl_archive() {
 	local url=$1 version=$2 output=$3 arch=$4
 	local path version=${version// /}
 	path=$(grep "${version_f#v}-${arch// /}" <<<"$__ARCHIVE_RESP__") || return 1
+	dl_url=$url
 	req "${url}/${path}" "$output"
 }
 get_archive_resp() {
@@ -470,12 +474,77 @@ get_archive_resp() {
 }
 get_archive_vers() { sed 's/^[^-]*-//;s/-\(all\|arm64-v8a\|arm-v7a\)\.apk//g' <<<"$__ARCHIVE_RESP__"; }
 get_archive_pkg_name() { echo "$__ARCHIVE_PKG_NAME__"; }
+
+# -------------------- github release --------------------
+get_github_release_resp() {
+	local url="$1"
+	local repo=${url#*github.com/}
+	repo=${repo%/releases/*}
+	__GITHUB_RELEASE_REPO__="$repo"
+	__GITHUB_RELEASE_RESP__=$(gh_req "https://api.github.com/repos/$repo/releases/latest" -) || return 1
+}
+
+get_github_release_pkg_name() {
+	local assets target_app pkg_guess
+	assets=$(echo "$__GITHUB_RELEASE_RESP__" | jq -r '.assets[].name')
+	target_app="${TARGET_APP_NAME,,}"
+
+	for asset in $assets; do
+		pkg_guess=$(echo "$asset" | sed -E 's/(-|[0-9]).*//')
+		if [[ "$pkg_guess" == *.* ]]; then
+			if [[ "$target_app" == "youtube" ]]; then
+				if [[ "$pkg_guess" == *"youtube"* && "$pkg_guess" != *"music"* ]]; then
+					echo "$pkg_guess"
+					return
+				fi
+			elif [[ "$pkg_guess" == *"$target_app"* ]]; then
+				echo "$pkg_guess"
+				return
+			fi
+		fi
+	done
+	return 1
+}
+
+get_github_release_vers() {
+	local assets=$(echo "$__GITHUB_RELEASE_RESP__" | jq -r '.assets[].name')
+	echo "$assets" | grep -oP '(\d+\.\d+\.\d+)' | sort -Vu
+}
+
+dl_github_release() {
+	local url=$1 version=$2 output=$3 arch=$4 dpi=$5
+	local download_url ver_clean arch_clean
+	dl_url=$url
+	ver_clean=${version// /}
+	ver_clean=${ver_clean#v}
+
+	if [ "$arch" = "arm64-v8a" ]; then
+		arch_clean="arm64-v8a"
+	elif [ "$arch" = "arm-v7a" ] || [ "$arch" = "armeabi-v7a" ]; then
+		arch_clean="arm-v7a"
+	else
+		arch_clean="all"
+	fi
+
+	download_url=$(echo "$__GITHUB_RELEASE_RESP__" | jq -r --arg v "$ver_clean" --arg a "$arch_clean" '
+		.assets[] | 
+		select(.name | contains($v)) | 
+		select(.name | contains($a)) | 
+		.browser_download_url' | head -n 1)
+
+	if [ -n "$download_url" ] && [ "$download_url" != "null" ]; then
+		pr "Found GitHub asset for $arch ($arch_clean): $download_url"
+		req "$download_url" "$output"
+		return 0
+	fi
+	return 1
+}
 # --------------------------------------------------
 
 patch_apk() {
 	local stock_input=$1 patched_apk=$2 patcher_args=$3 cli_jar=$4 patches_jar=$5
 	local cmd="java -jar '$cli_jar' patch '$stock_input' --purge -o '$patched_apk' -p '$patches_jar' --keystore=ks.keystore \
---keystore-entry-password=123456789 --keystore-password=123456789 --signer=jhc --keystore-entry-alias=jhc $patcher_args"
+--keystore-entry-password=123456789 --keystore-password=123456789 --signer=E85 --keystore-entry-alias=E85 $patcher_args"
 	if [ "$OS" = Android ]; then cmd+=" --custom-aapt2-binary='${AAPT2}'"; fi
 	pr "$cmd"
 	if eval "$cmd"; then [ -f "$patched_apk" ]; else
@@ -506,13 +575,15 @@ build_rv() {
 	local arch=${args[arch]}
 	local arch_f="${arch// /}"
 
+	export TARGET_APP_NAME="${args[app_name]}"
+
 	local p_patcher_args=()
 	if [ "${args[excluded_patches]}" ]; then p_patcher_args+=("$(join_args "${args[excluded_patches]}" -d)"); fi
 	if [ "${args[included_patches]}" ]; then p_patcher_args+=("$(join_args "${args[included_patches]}" -e)"); fi
 	[ "${args[exclusive_patches]}" = true ] && p_patcher_args+=("--exclusive")
 
 	local tried_dl=()
-	for dl_p in archive apkmirror uptodown; do
+	for dl_p in github_release archive apkmirror uptodown; do
 		if [ -z "${args[${dl_p}_dlurl]}" ]; then continue; fi
 		if ! get_${dl_p}_resp "${args[${dl_p}_dlurl]}" || ! pkg_name=$(get_"${dl_p}"_pkg_name); then
 			args[${dl_p}_dlurl]=""
@@ -566,7 +637,7 @@ build_rv() {
 	version_f=${version_f#v}
 	local stock_apk="${TEMP_DIR}/${pkg_name}-${version_f}-${arch_f}.apk"
 	if [ ! -f "$stock_apk" ]; then
-		for dl_p in archive apkmirror uptodown; do
+		for dl_p in github_release archive apkmirror uptodown; do
 			if [ -z "${args[${dl_p}_dlurl]}" ]; then continue; fi
 			pr "Downloading '${table}' from '${dl_p}'"
 			if ! isoneof $dl_p "${tried_dl[@]}"; then
@@ -587,7 +658,18 @@ build_rv() {
 		epr "$pkg_name not building, apk signature mismatch '$stock_apk': $OP"
 		return 0
 	fi
-	log "${table}: ${version}"
+
+    if [ "$dl_from" = apkmirror ]; then
+        dl_from="APKMirror"
+    elif [ "$dl_from" = uptodown ]; then
+        dl_from="Uptodown"
+	elif [ "$dl_from" = archive ]; then
+		dl_from="Archive"
+	elif [ "$dl_from" = github_release ]; then
+		dl_from="GitHub Release"
+    fi
+
+	log "${table}: ${version}\ndownloaded from: [$dl_from - ${table}]($dl_url)"
 
 	local microg_patch
 	microg_patch=$(grep "^Name: " <<<"$list_patches" | grep -i "gmscore\|microg" || :) microg_patch=${microg_patch#*: }
@@ -692,7 +774,7 @@ module_prop() {
 name=${2}
 version=v${3}
 versionCode=${NEXT_VER_CODE}
-author=j-hc
+author=E85 Addict & j-hc
 description=${4}" >"${6}/module.prop"
 
 	if [ "$ENABLE_MODULE_UPDATE" = true ]; then echo "updateJson=${5}" >>"${6}/module.prop"; fi

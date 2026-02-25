@@ -1,6 +1,6 @@
 {
-  "version": "v2026.04.0 (patches 1.14.0.mpp)",
-  "versionCode": 20250103,
-  "zipUrl": "https://github.com/E85Addict/revanced-magisk-module/releases/download/20250103/reddit-morphe-magisk-v2026.04.0-all.zip",
+  "version": "v2026.04.0 (patches 1.15.0.mpp)",
+  "versionCode": 20250104,
+  "zipUrl": "https://github.com/E85Addict/revanced-magisk-module/releases/download/20250104/reddit-morphe-module-v2026.04.0-all.zip",
   "changelog": "https://raw.githubusercontent.com/E85Addict/revanced-magisk-module/update/build.md"
 }

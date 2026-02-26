@@ -112,7 +112,7 @@ for table_name in $(toml_get_table_names); do
 		fi
 	} || app_args[build_mode]=apk
 
-	for dl_from in "direct" "uptodown" "apkmirror" "archive"; do
+	for dl_from in "direct" "github_release" "uptodown" "apkmirror" "archive"; do
 		if app_args[${dl_from}_dlurl]=$(toml_get "$t" ${dl_from}-dlurl); then
 			app_args[${dl_from}_dlurl]=${app_args[${dl_from}_dlurl]%/}
 			app_args[${dl_from}_dlurl]=${app_args[${dl_from}_dlurl]%download}

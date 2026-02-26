@@ -20,6 +20,7 @@ patcher-args = """\
 version = "auto"
 archive-dlurl = "https://archive.org/download/e85-apks/apks/com.google.android.youtube"
 direct-dlurl = "https://github.com/E85Addict/APKs/releases/download/1/com.google.android.youtube-20.14.43-all.apk"
+github-release-dlurl = "https://github.com/E85Addict/APKs/releases/latest"
 apkmirror-dlurl = "https://apkmirror.com/apk/google-inc/youtube"
 uptodown-dlurl = "https://youtube.en.uptodown.com/android"
 
@@ -28,6 +29,7 @@ enabled = true
 app-name = "YouTube"
 archive-dlurl = "https://archive.org/download/e85-apks/apks/com.google.android.youtube"
 direct-dlurl = "https://github.com/E85Addict/APKs/releases/download/1/com.google.android.youtube-20.40.45-all.apk"
+github-release-dlurl = "https://github.com/E85Addict/APKs/releases/latest"
 apkmirror-dlurl = "https://apkmirror.com/apk/google-inc/youtube"
 uptodown-dlurl = "https://youtube.en.uptodown.com/android"
 build-mode = "both"
@@ -50,6 +52,7 @@ patcher-args = """\
     """
 archive-dlurl = "https://archive.org/download/e85-apks/apks/com.google.android.apps.youtube.music"
 direct-dlurl = "https://github.com/E85Addict/APKs/releases/download/1/com.google.android.apps.youtube.music-8.10.52-arm64-v8a.apk"
+github-release-dlurl = "https://github.com/E85Addict/APKs/releases/latest"
 apkmirror-dlurl = "https://apkmirror.com/apk/google-inc/youtube-music"
 uptodown-dlurl = "https://youtube-music.en.uptodown.com/android"
 
@@ -58,6 +61,7 @@ enabled = true
 app-name = "Music"
 archive-dlurl = "https://archive.org/download/e85-apks/apks/com.google.android.apps.youtube.music"
 direct-dlurl = "https://github.com/E85Addict/APKs/releases/download/1/com.google.android.apps.youtube.music-8.40.54-arm64-v8a.apk"
+github-release-dlurl = "https://github.com/E85Addict/APKs/releases/latest"
 apkmirror-dlurl = "https://apkmirror.com/apk/google-inc/youtube-music"
 uptodown-dlurl = "https://youtube-music.en.uptodown.com/android"
 build-mode = "both"
@@ -144,6 +148,7 @@ patcher-args = """\
 version = "auto"
 archive-dlurl = "https://archive.org/download/e85-apks/apks/com.google.android.youtube"
 direct-dlurl = "https://github.com/E85Addict/APKs/releases/download/1/com.google.android.youtube-20.14.43-all.apk"
+github-release-dlurl = "https://github.com/E85Addict/APKs/releases/latest"
 apkmirror-dlurl = "https://apkmirror.com/apk/google-inc/youtube"
 uptodown-dlurl = "https://youtube.en.uptodown.com/android"
 

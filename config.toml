@@ -40,6 +40,7 @@ patcher-args = """\
     """
 patches-source = "MorpheApp/morphe-patches"
 cli-source = "MorpheApp/morphe-cli"
+cli-version = "v1.4.0"
 rv-brand = "Morphe"
 
 [Music]
@@ -72,6 +73,7 @@ patcher-args = """\
 arch = "arm64-v8a"
 patches-source = "MorpheApp/morphe-patches"
 cli-source = "MorpheApp/morphe-cli"
+cli-version = "v1.4.0"
 rv-brand = "Morphe"
 
 [Reddit-Morphe]
@@ -81,6 +83,7 @@ rv-brand = "Morphe"
 build-mode = "both"
 patches-source = "MorpheApp/morphe-patches"
 cli-source = "MorpheApp/morphe-cli"
+cli-version = "v1.4.0"
 apkmirror-dlurl = "https://www.apkmirror.com/apk/redditinc/reddit/"
 archive-dlurl = "https://archive.org/download/jhc-apks/apks/com.reddit.frontpage"
 uptodown-dlurl = "https://reddit-official-app.en.uptodown.com/android"

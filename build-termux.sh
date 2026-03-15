@@ -41,13 +41,13 @@ if [ -d revanced-magisk-module ] || [ -f config.toml ]; then
 		cd ..
 		cp -f revanced-magisk-module/config.toml .
 		rm -rf revanced-magisk-module
-		git clone https://github.com/j-hc/revanced-magisk-module --recurse --depth 1
+		git clone https://github.com/E85Addict/revanced-magisk-module --recurse --depth 1
 		mv -f config.toml revanced-magisk-module/config.toml
 		cd revanced-magisk-module
 	fi
 else
 	pr "Cloning revanced-magisk-module."
-	git clone https://github.com/j-hc/revanced-magisk-module --depth 1
+	git clone https://github.com/E85Addict/revanced-magisk-module --depth 1
 	cd revanced-magisk-module
 	sed -i '/^enabled.*/d; /^\[.*\]/a enabled = false' config.toml
 	grep -q 'revanced-magisk-module' ~/.gitconfig 2>/dev/null ||

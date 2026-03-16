@@ -1,6 +1,6 @@
 {
-  "version": "v20.40.45 (patches 6.0.0.rvp)",
-  "versionCode": 20250110,
-  "zipUrl": "https://github.com/E85Addict/revanced-magisk-module/releases/download/20250110/youtube-revanced-module-v20.40.45-all.zip",
+  "version": "v20.40.45 (patches 6.0.1.rvp)",
+  "versionCode": 20250111,
+  "zipUrl": "https://github.com/E85Addict/revanced-magisk-module/releases/download/20250111/youtube-revanced-module-v20.40.45-all.zip",
   "changelog": "https://raw.githubusercontent.com/E85Addict/revanced-magisk-module/update/build.md"
 }

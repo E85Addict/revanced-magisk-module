@@ -71,7 +71,7 @@ cli-source = "MorpheApp/morphe-cli"
 rv-brand = "Morphe"
 
 [Reddit-Morphe]
-enabled = true
+enabled = false
 app-name = "Reddit"
 rv-brand = "Morphe"
 build-mode = "both"

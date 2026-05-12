@@ -1,6 +1,6 @@
 {
-  "version": "v8.47.56 (patches 1.26.0.mpp)",
-  "versionCode": 20250122,
-  "zipUrl": "https://github.com/E85Addict/revanced-magisk-module/releases/download/20250122/music-morphe-module-v8.47.56-arm64-v8a.zip",
+  "version": "v8.47.56 (patches 1.27.0.mpp)",
+  "versionCode": 20250123,
+  "zipUrl": "https://github.com/E85Addict/revanced-magisk-module/releases/download/20250123/music-morphe-module-v8.47.56-arm64-v8a.zip",
   "changelog": "https://raw.githubusercontent.com/E85Addict/revanced-magisk-module/update/build.md"
 }

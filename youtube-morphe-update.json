@@ -1,6 +1,6 @@
 {
-  "version": "v20.51.39 (patches 1.31.0.mpp)",
-  "versionCode": 20250127,
-  "zipUrl": "https://github.com/E85Addict/revanced-magisk-module/releases/download/20250127/youtube-morphe-module-v20.51.39-all.zip",
+  "version": "v20.51.39 (patches 1.32.0.mpp)",
+  "versionCode": 20250129,
+  "zipUrl": "https://github.com/E85Addict/revanced-magisk-module/releases/download/20250129/youtube-morphe-module-v20.51.39-all.zip",
   "changelog": "https://raw.githubusercontent.com/E85Addict/revanced-magisk-module/update/build.md"
 }

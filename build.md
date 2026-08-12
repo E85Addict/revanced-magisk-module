@@ -1,3 +1,7 @@
+Music: 8.40.54
+downloaded from: [GitHub Release - Music](https://github.com/E85Addict/APKs/releases/download/1/com.google.android.apps.youtube.music-8.40.54-arm64-v8a.apk)  
+Music-Morphe: 9.15.51
+downloaded from: [GitHub Release - Music-Morphe](https://github.com/E85Addict/APKs/releases/download/1/com.google.android.apps.youtube.music-9.15.51-arm64-v8a.apk)  
 TikTok: 46.2.3
 downloaded from: [Direct URL - TikTok](https://github.com/E85Addict/APKs/releases/download/1/com.zhiliaoapp.musically-46.2.3-all.apk)  
 YouTube: 20.40.45
@@ -19,9 +23,7 @@ CLI: ReVanced/revanced-cli-6.0.0-all.jar
 Patches: icysymmetra/patches-0.7.0-dev.3.mpp  
 [Changelog](https://github.com/icysymmetra/tiktok-patches-for-morphe/releases/tag/v0.7.0-dev.3)
 
-CLI: MorpheApp/morphe-desktop-1.13.0-all.jar  
 Patches: MorpheApp/patches-1.39.1.mpp  
-[Changelog](https://github.com/MorpheApp/morphe-patches/releases/tag/v1.39.1)  
+[Changelog](https://github.com/MorpheApp/morphe-patches/releases/tag/v1.39.1)
 
-Skipped:  
-Patches: MorpheApp/patches-1.39.1.mpp          
+CLI: MorpheApp/morphe-desktop-1.13.0-all.jar    

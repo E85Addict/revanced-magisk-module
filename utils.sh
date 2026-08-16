@@ -578,68 +578,189 @@ get_direct_resp() { __DIRECT_APKNAME__=$(awk -F/ '{print $NF}' <<<"$1"); }
 
 # -------------------- github release --------------------
 get_github_release_resp() {
-	local url="$1"
-	local repo=${url#*github.com/}
-	repo=${repo%/releases/*}
-	__GITHUB_RELEASE_REPO__="$repo"
-	__GITHUB_RELEASE_RESP__=$(gh_req "https://api.github.com/repos/$repo/releases/latest" -) || return 1
+    local url="$1"
+    local repo release_path api_url tag_name
+
+    repo=${url#*github.com/}
+    repo=${repo%/releases/*}
+
+    release_path="${url#*github.com/}"
+    release_path="${release_path#*/releases/}"
+
+    if [[ "$release_path" == tag/* ]]; then
+        tag_name="${release_path#tag/}"
+        api_url="https://api.github.com/repos/${repo}/releases/tags/${tag_name}"
+    else
+        api_url="https://api.github.com/repos/${repo}/releases/latest"
+    fi
+
+    __GITHUB_RELEASE_REPO__="$repo"
+    __GITHUB_RELEASE_RESP__=$(gh_req "$api_url" -) || return 1
+    __GITHUB_RELEASE_TAG__=$(jq -r '.tag_name // empty' <<<"$__GITHUB_RELEASE_RESP__")
 }
 
 get_github_release_pkg_name() {
-	local assets target_app pkg_guess
-	assets=$(echo "$__GITHUB_RELEASE_RESP__" | jq -r '.assets[].name')
-	target_app="${TARGET_APP_NAME,,}"
+    local assets target_app asset base pkg_guess arch_suffixes
+    assets=$(echo "$__GITHUB_RELEASE_RESP__" | jq -r '.assets[].name')
+    target_app="${TARGET_APP_NAME,,}"
 
-	for asset in $assets; do
-		pkg_guess=$(echo "$asset" | sed -E 's/(-|[0-9]).*//')
-		if [[ "$pkg_guess" == *.* ]]; then
-			if [[ "$target_app" == "youtube" ]]; then
-				if [[ "$pkg_guess" == *"youtube"* && "$pkg_guess" != *"music"* ]]; then
-					echo "$pkg_guess"
-					return
-				fi
-			elif [[ "$pkg_guess" == *"$target_app"* ]]; then
-				echo "$pkg_guess"
-				return
-			fi
-		fi
-	done
-	return 1
+    # Prefer the GitHub release tag when it already looks like a real package name.
+    if [ -n "${__GITHUB_RELEASE_TAG__:-}" ] && [[ "${__GITHUB_RELEASE_TAG__}" =~ ^[A-Za-z]+[A-Za-z0-9_]*([.][A-Za-z0-9_]+)+$ ]]; then
+        echo "${__GITHUB_RELEASE_TAG__}"
+        return 0
+    fi
+
+    arch_suffixes="all arm64-v8a arm-v7a armeabi-v7a x86 x86_64 universal noarch"
+    for asset in $assets; do
+        base="${asset%.*}"
+        for suffix in $arch_suffixes; do
+            base="${base%-${suffix}}"
+        done
+        pkg_guess=$(sed -E 's/(-?v?[0-9]+([.-][0-9A-Za-z]+)*)$//; s/-$//' <<<"$base")
+        pkg_guess="${pkg_guess,,}"
+
+        if [[ -n "$pkg_guess" && "$pkg_guess" != "." && "$pkg_guess" != "$asset" ]]; then
+            if [[ "$pkg_guess" == *"$target_app"* ]]; then
+                echo "$pkg_guess"
+                return 0
+            fi
+        fi
+    done
+    return 1
 }
 
 get_github_release_vers() {
-	local assets=$(echo "$__GITHUB_RELEASE_RESP__" | jq -r '.assets[].name')
-	echo "$assets" | grep -oP '(\d+\.\d+\.\d+)' | sort -Vu
+    local assets
+    assets=$(echo "$__GITHUB_RELEASE_RESP__" | jq -r '.assets[].name')
+    echo "$assets" | grep -oE 'v?[0-9]+(\.[0-9]+)+([.-][0-9A-Za-z]+)?' | sort -Vu
 }
 
 dl_github_release() {
-	local url=$1 version=$2 output=$3 arch=$4 dpi=$5
-	local download_url ver_clean arch_clean
+    local url=$1 version=$2 output=$3 arch=$4 dpi=$5
+    local download_url ver_clean asset
+    local -a all_assets=()
+    local -a matches=()
+    local -a wanted=()
+    local strict=false
 
-	ver_clean=${version// /}
-	ver_clean=${ver_clean#v}
+    ver_clean=${version// /}
+    ver_clean=${ver_clean#v}
 
-	if [ "$arch" = "arm64-v8a" ]; then
-		arch_clean="arm64-v8a"
-	elif [ "$arch" = "arm-v7a" ] || [ "$arch" = "armeabi-v7a" ]; then
-		arch_clean="arm-v7a"
-	else
-		arch_clean="all"
-	fi
+    case "$arch" in
+        arm64-v8a)
+            wanted=("arm64-v8a")
+            strict=true
+            ;;
+        arm-v7a|armeabi-v7a)
+            wanted=("arm-v7a" "armeabi-v7a")
+            strict=true
+            ;;
+        x86)
+            wanted=("x86")
+            strict=true
+            ;;
+        x86_64)
+            wanted=("x86_64")
+            strict=true
+            ;;
+        both)
+            wanted=("arm64-v8a" "arm-v7a" "armeabi-v7a")
+            strict=true
+            ;;
+        all|*)
+            wanted=("all" "universal" "noarch")
+            strict=false
+            ;;
+    esac
 
-	download_url=$(echo "$__GITHUB_RELEASE_RESP__" | jq -r --arg v "$ver_clean" --arg a "$arch_clean" '
-		.assets[] | 
-		select(.name | contains($v)) | 
-		select(.name | contains($a)) | 
-		.browser_download_url' | head -n 1)
+    while IFS= read -r asset; do
+        [ -z "$asset" ] && continue
+        [[ "$asset" != *"${ver_clean}"* ]] && continue
+        all_assets+=("$asset")
+    done < <(echo "$__GITHUB_RELEASE_RESP__" | jq -r '.assets[].name')
 
-	if [ -n "$download_url" ] && [ "$download_url" != "null" ]; then
-		pr "Found GitHub asset for $arch ($arch_clean): $download_url"
-		dl_url=$download_url
-		req "$download_url" "$output"
-		return 0
-	fi
-	return 1
+    # strict mode: fail if the requested arch does not actually exist
+    if [ "$strict" = true ]; then
+        for want in "${wanted[@]}"; do
+            if ! printf '%s\n' "${all_assets[@]}" | grep -Eq -- "${want}"; then
+                epr "GitHub release missing required arch '${want}' for version '${version}'"
+                return 1
+            fi
+        done
+    fi
+
+    # exact arch match only for strict requests
+    for asset in "${all_assets[@]}"; do
+        for want in "${wanted[@]}"; do
+            case "$want" in
+                arm64-v8a)
+                    if [[ "$asset" == *"arm64-v8a"* ]]; then
+                        matches+=("$asset")
+                    fi
+                    ;;
+                arm-v7a|armeabi-v7a)
+                    if [[ "$asset" == *"arm-v7a"* || "$asset" == *"armeabi-v7a"* ]]; then
+                        matches+=("$asset")
+                    fi
+                    ;;
+                x86)
+                    if [[ "$asset" == *"x86"* && "$asset" != *"x86_64"* ]]; then
+                        matches+=("$asset")
+                    fi
+                    ;;
+                x86_64)
+                    if [[ "$asset" == *"x86_64"* ]]; then
+                        matches+=("$asset")
+                    fi
+                    ;;
+                all|universal|noarch)
+                    if [[ "$asset" == *"all"* || "$asset" == *"universal"* || "$asset" == *"noarch"* ]]; then
+                        matches+=("$asset")
+                    fi
+                    ;;
+            esac
+        done
+    done
+
+    if [ "${#matches[@]}" -eq 0 ]; then
+        epr "No compatible GitHub release asset found for ${version} (${arch})"
+        return 1
+    fi
+
+    # prefer strongest actual arch
+    local -a ordered=()
+    for asset in "${matches[@]}"; do
+        if [[ "$asset" == *"arm64-v8a"* ]]; then
+            ordered+=("$asset")
+        elif [[ "$asset" == *"x86_64"* ]]; then
+            ordered+=("$asset")
+        elif [[ "$asset" == *"arm-v7a"* || "$asset" == *"armeabi-v7a"* ]]; then
+            ordered+=("$asset")
+        elif [[ "$asset" == *"x86"* ]]; then
+            ordered+=("$asset")
+        elif [[ "$asset" == *"all"* || "$asset" == *"universal"* || "$asset" == *"noarch"* ]]; then
+            ordered+=("$asset")
+        fi
+    done
+    [ "${#ordered[@]}" -gt 0 ] && matches=("${ordered[@]}")
+
+    asset="${matches[0]}"
+    download_url=$(echo "$__GITHUB_RELEASE_RESP__" | jq -r --arg n "$asset" '.assets[] | select(.name == $n) | .browser_download_url' | head -n 1)
+
+    if [ -z "$download_url" ] || [ "$download_url" = "null" ]; then
+        return 1
+    fi
+
+    pr "Selected GitHub asset: $asset"
+    dl_url="$download_url"
+
+    if [[ "$asset" == *.apkm ]]; then
+        req "$download_url" "${output}.apkm" || return 1
+        merge_splits "${output}.apkm" "$output"
+    else
+        req "$download_url" "$output" || return 1
+    fi
+    return 0
 }
 # --------------------------------------------------
 

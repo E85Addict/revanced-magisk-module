@@ -8,7 +8,7 @@ BUILD_DIR="build"
 DL_SRCS=("direct" "github_release" "archive" "apkmirror" "uptodown")
 
 if [ "${GITHUB_TOKEN-}" ]; then GH_HEADER="Authorization: token ${GITHUB_TOKEN}"; else GH_HEADER=; fi
-NEXT_VER_CODE=${NEXT_VER_CODE:-$(date +'%Y%m%d')}
+NEXT_VER_CODE=$(gh release list -L 1 | awk -F '\t' '{print $3}')
 OS=$(uname -o)
 
 toml_prep() {
@@ -664,7 +664,7 @@ dl_github_release() {
             strict=true
             ;;
         both)
-            wanted=("arm64-v8a" "arm-v7a" "armeabi-v7a")
+            wanted=("arm64-v8a" "arm-v7a")
             strict=true
             ;;
         all|*)
@@ -679,17 +679,38 @@ dl_github_release() {
         all_assets+=("$asset")
     done < <(echo "$__GITHUB_RELEASE_RESP__" | jq -r '.assets[].name')
 
-    # strict mode: fail if the requested arch does not actually exist
+    # strict mode: fail if the requested arch does not exist, treating arm-v7a and
+    # armeabi-v7a as the same ABI.
     if [ "$strict" = true ]; then
-        for want in "${wanted[@]}"; do
-            if ! printf '%s\n' "${all_assets[@]}" | grep -Eq -- "${want}"; then
-                epr "GitHub release missing required arch '${want}' for version '${version}'"
-                return 1
-            fi
-        done
+        case "$arch" in
+            arm-v7a|armeabi-v7a)
+                if ! printf '%s\n' "${all_assets[@]}" | grep -Eq -- 'arm-v7a|armeabi-v7a'; then
+                    epr "GitHub release missing required arch 'arm-v7a' for version '${version}'"
+                    return 1
+                fi
+                ;;
+            both)
+                if ! printf '%s\n' "${all_assets[@]}" | grep -Eq -- 'arm64-v8a'; then
+                    epr "GitHub release missing required arch 'arm64-v8a' for version '${version}'"
+                    return 1
+                fi
+                if ! printf '%s\n' "${all_assets[@]}" | grep -Eq -- 'arm-v7a|armeabi-v7a'; then
+                    epr "GitHub release missing required arch 'arm-v7a' for version '${version}'"
+                    return 1
+                fi
+                ;;
+            *)
+                for want in "${wanted[@]}"; do
+                    if ! printf '%s\n' "${all_assets[@]}" | grep -Eq -- "${want}"; then
+                        epr "GitHub release missing required arch '${want}' for version '${version}'"
+                        return 1
+                    fi
+                done
+                ;;
+        esac
     fi
 
-    # exact arch match only for strict requests
+    # match either arm-v7a or armeabi-v7a as the same arch
     for asset in "${all_assets[@]}"; do
         for want in "${wanted[@]}"; do
             case "$want" in
@@ -698,7 +719,7 @@ dl_github_release() {
                         matches+=("$asset")
                     fi
                     ;;
-                arm-v7a|armeabi-v7a)
+                arm-v7a)
                     if [[ "$asset" == *"arm-v7a"* || "$asset" == *"armeabi-v7a"* ]]; then
                         matches+=("$asset")
                     fi

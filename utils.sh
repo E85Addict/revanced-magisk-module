@@ -587,9 +587,14 @@ get_github_release_resp() {
     release_path="${url#*github.com/}"
     release_path="${release_path#*/releases/}"
 
+    # Use the exact release/tag from the URL when present.
+    # Otherwise fall back to latest.
     if [[ "$release_path" == tag/* ]]; then
         tag_name="${release_path#tag/}"
         api_url="https://api.github.com/repos/${repo}/releases/tags/${tag_name}"
+    elif [[ "$release_path" =~ ^[A-Za-z0-9._-]+$ ]]; then
+        # Handles direct release names like /releases/v1.2.3 or /releases/Release-123
+        api_url="https://api.github.com/repos/${repo}/releases/tags/${release_path}"
     else
         api_url="https://api.github.com/repos/${repo}/releases/latest"
     fi
@@ -679,8 +684,6 @@ dl_github_release() {
         all_assets+=("$asset")
     done < <(echo "$__GITHUB_RELEASE_RESP__" | jq -r '.assets[].name')
 
-    # strict mode: fail if the requested arch does not exist, treating arm-v7a and
-    # armeabi-v7a as the same ABI.
     if [ "$strict" = true ]; then
         case "$arch" in
             arm-v7a|armeabi-v7a)
@@ -710,7 +713,6 @@ dl_github_release() {
         esac
     fi
 
-    # match either arm-v7a or armeabi-v7a as the same arch
     for asset in "${all_assets[@]}"; do
         for want in "${wanted[@]}"; do
             case "$want" in
@@ -719,7 +721,7 @@ dl_github_release() {
                         matches+=("$asset")
                     fi
                     ;;
-                arm-v7a)
+                arm-v7a|armeabi-v7a)
                     if [[ "$asset" == *"arm-v7a"* || "$asset" == *"armeabi-v7a"* ]]; then
                         matches+=("$asset")
                     fi
@@ -748,7 +750,6 @@ dl_github_release() {
         return 1
     fi
 
-    # prefer strongest actual arch
     local -a ordered=()
     for asset in "${matches[@]}"; do
         if [[ "$asset" == *"arm64-v8a"* ]]; then

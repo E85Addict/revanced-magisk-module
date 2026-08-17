@@ -6,12 +6,12 @@ Use [zygisk-detach](https://github.com/j-hc/zygisk-detach) to detach YouTube and
 
 [revanced-magisk-module](https://github.com/E85Addict/revanced-magisk-module)
   
-Patches: crimera/patches-3.9.0-dev.8.mpp  
-[Changelog](https://github.com/crimera/piko/releases/tag/v3.9.0-dev.8)
+Patches: crimera/patches-3.9.0-dev.9.mpp  
+[Changelog](https://github.com/crimera/piko/releases/tag/v3.9.0-dev.9)
 
 CLI: MorpheApp/morphe-desktop-1.13.0-all.jar    
 
 Skipped:  
 Patches: E85Addict/patches-6.2.1.rvp  
 Patches: MorpheApp/patches-1.39.1.mpp      
-Patches: icysymmetra/patches-0.7.0-dev.5.mpp    
+Patches: icysymmetra/patches-0.7.0-dev.5.mpp      

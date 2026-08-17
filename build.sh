@@ -64,7 +64,11 @@ gh_dl "${MODULE_TEMPLATE_DIR}/bin/x64/cmpr" "https://github.com/j-hc/cmpr/releas
 
 build_rv_w() {
 	if [ "$LOGGING_F" = true ]; then
-		logf=logs/"${table_name,,}.log"
+		if ! [ "${app_args[arch]}" = "all" ]; then
+			logf="logs/${table_name_f}-${app_args[arch]}.log"
+		else
+			logf="logs/${table_name_f}.log"
+		fi
 		: >"$logf"
 		{ build_rv 2>&1 "$(declare -p app_args)" | tee "$logf"; } &
 	else

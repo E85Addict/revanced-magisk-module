@@ -117,6 +117,19 @@ apkmirror-dlurl = "https://www.apkmirror.com/apk/tiktok-pte-ltd/tik-tok-includin
 uptodown-dlurl = "https://tiktok.en.uptodown.com/android"
 archive-dlurl = "https://archive.org/download/e85-apks/apks/com.zhiliaoapp.musically"
 
+[Instagram]
+enabled = true
+build-mode = "both"
+rv-brand = "Piko"
+patches-source = "crimera/piko"
+cli-source = "MorpheApp/morphe-desktop"
+patches-version = "dev"
+github_release-dlurl = "https://github.com/E85Addict/APKs/releases/tag/com.instagram.android"
+apkmirror-dlurl = "https://www.apkmirror.com/apk/instagram/instagram-instagram/"
+uptodown-dlurl = "https://instagram.en.uptodown.com/android"
+version = "auto"
+arch = "arm64-v8a"
+
 [YouTube-Custom]
 enabled = true
 exclusive-patches = true

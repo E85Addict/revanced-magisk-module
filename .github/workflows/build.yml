@@ -27,8 +27,6 @@ jobs:
 
       - name: Update config
         if: ${{ inputs.from_ci }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if git checkout origin/update build.md; then
             UPDATE_CFG=$(./build.sh config.toml --config-update)

@@ -1,6 +1,6 @@
 {
-  "version": "v46.2.3 (patches 0.7.0.mpp)",
-  "versionCode": 20250150,
-  "zipUrl": "https://github.com/E85Addict/revanced-magisk-module/releases/download/20250150/tiktok-morphe-module-v46.2.3-all.zip",
+  "version": "v46.2.3 (patches dev.1.mpp)",
+  "versionCode": 20250152,
+  "zipUrl": "https://github.com/E85Addict/revanced-magisk-module/releases/download/20250152/tiktok-morphe-module-v46.2.3-all.zip",
   "changelog": "https://raw.githubusercontent.com/E85Addict/revanced-magisk-module/update/build.md"
 }

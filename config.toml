@@ -127,7 +127,7 @@ patches-version = "dev"
 github_release-dlurl = "https://github.com/E85Addict/APKs/releases/tag/com.instagram.android"
 apkmirror-dlurl = "https://www.apkmirror.com/apk/instagram/instagram-instagram/"
 uptodown-dlurl = "https://instagram.en.uptodown.com/android"
-version = "auto"
+version = "439.0.0.37.89"
 arch = "arm64-v8a"
 
 [YouTube-Custom]

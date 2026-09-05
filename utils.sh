@@ -5,7 +5,7 @@ CWD=$(pwd)
 TEMP_DIR="temp"
 BIN_DIR="bin"
 BUILD_DIR="build"
-DL_SRCS=("direct" "archive" "apkmirror" "uptodown")
+DL_SRCS=("direct" "github_release" "archive" "apkmirror" "uptodown")
 
 if [ "${GITHUB_TOKEN-}" ]; then GH_HEADER="Authorization: token ${GITHUB_TOKEN}"; else GH_HEADER=; fi
 NEXT_VER_CODE=${NEXT_VER_CODE:-$(date +'%Y%m%d')}
@@ -370,6 +370,7 @@ merge_splits() {
 	return 0
 }
 
+dl_url="https://www.apkmirror.com/"
 # -------------------- apkmirror --------------------
 apkmirror_search() {
 	local resp="$1" dpi="$2" arch="$3" apk_bundle="$4"
@@ -433,6 +434,7 @@ dl_apkmirror() {
 		if [ -z "$dlurl" ]; then return 1; fi
 		resp=$(req "$dlurl" -)
 	fi
+	dl_url=$dlurl
 	url=$(echo "$resp" | $HTMLQ --base https://www.apkmirror.com --attribute href "a.btn") || return 1
 	url=$(req "$url" - | $HTMLQ --base https://www.apkmirror.com --attribute href "span > a[rel = nofollow]") || return 1
 
@@ -514,6 +516,7 @@ dl_uptodown() {
 		done
 		if [ $n -eq 12 ]; then return 1; fi
 	fi
+	dl_url=$versionURL
 	local data_url
 	data_url=$($HTMLQ "#detail-download-button" --attribute data-url <<<"$resp") || return 1
 	if [ $is_bundle = true ]; then
@@ -542,8 +545,10 @@ dl_archive() {
 	if [ "${path##*.}" = "apkm" ]; then
 		req "${url}/${path}" "${output}.apkm" || return 1
 		merge_splits "${output}.apkm" "$output"
+		dl_url=$url
 	else
 		req "${url}/${path}" "${output}" || return 1
+		dl_url=$url
 	fi
 }
 get_archive_resp() {
@@ -565,13 +570,224 @@ dl_direct() {
 	if [ "${url##*.}" = "apkm" ]; then
 		req "$url" "${output}.apkm" || return 1
 		merge_splits "${output}.apkm" "$output"
+		dl_url=$url
 	else
 		req "$url" "${output}" || return 1
+		dl_url=$url
 	fi
 }
 get_direct_vers() { cut -d- -f2 <<<"$__DIRECT_APKNAME__"; }
 get_direct_pkg_name() { cut -d- -f1 <<<"$__DIRECT_APKNAME__"; }
 get_direct_resp() { __DIRECT_APKNAME__=$(awk -F/ '{print $NF}' <<<"$1"); }
+
+# -------------------- github release --------------------
+get_github_release_resp() {
+    local url="$1"
+    local repo release_path api_url tag_name
+
+    repo=${url#*github.com/}
+    repo=${repo%/releases/*}
+
+    release_path="${url#*github.com/}"
+    release_path="${release_path#*/releases/}"
+
+    # Use the exact release/tag from the URL when present.
+    # Otherwise fall back to latest.
+    if [[ "$release_path" == tag/* ]]; then
+        tag_name="${release_path#tag/}"
+        api_url="https://api.github.com/repos/${repo}/releases/tags/${tag_name}"
+    elif [[ "$release_path" =~ ^[A-Za-z0-9._-]+$ ]]; then
+        # Handles direct release names like /releases/v1.2.3 or /releases/Release-123
+        api_url="https://api.github.com/repos/${repo}/releases/tags/${release_path}"
+    else
+        api_url="https://api.github.com/repos/${repo}/releases/latest"
+    fi
+
+    __GITHUB_RELEASE_REPO__="$repo"
+    __GITHUB_RELEASE_RESP__=$(gh_req "$api_url" -) || return 1
+    __GITHUB_RELEASE_TAG__=$(jq -r '.tag_name // empty' <<<"$__GITHUB_RELEASE_RESP__")
+}
+
+get_github_release_pkg_name() {
+    local assets target_app asset base pkg_guess arch_suffixes
+    assets=$(echo "$__GITHUB_RELEASE_RESP__" | jq -r '.assets[].name')
+    target_app="${TARGET_APP_NAME,,}"
+
+    # Prefer the GitHub release tag when it already looks like a real package name.
+    if [ -n "${__GITHUB_RELEASE_TAG__:-}" ] && [[ "${__GITHUB_RELEASE_TAG__}" =~ ^[A-Za-z]+[A-Za-z0-9_]*([.][A-Za-z0-9_]+)+$ ]]; then
+        echo "${__GITHUB_RELEASE_TAG__}"
+        return 0
+    fi
+
+    arch_suffixes="all arm64-v8a arm-v7a armeabi-v7a x86 x86_64 universal noarch"
+    for asset in $assets; do
+        base="${asset%.*}"
+        for suffix in $arch_suffixes; do
+            base="${base%-${suffix}}"
+        done
+        pkg_guess=$(sed -E 's/(-?v?[0-9]+([.-][0-9A-Za-z]+)*)$//; s/-$//' <<<"$base")
+        pkg_guess="${pkg_guess,,}"
+
+        if [[ -n "$pkg_guess" && "$pkg_guess" != "." && "$pkg_guess" != "$asset" ]]; then
+            if [[ "$pkg_guess" == *"$target_app"* ]]; then
+                echo "$pkg_guess"
+                return 0
+            fi
+        fi
+    done
+    return 1
+}
+
+get_github_release_vers() {
+    local assets
+    assets=$(echo "$__GITHUB_RELEASE_RESP__" | jq -r '.assets[].name')
+    echo "$assets" | grep -oE 'v?[0-9]+(\.[0-9]+)+([.-][0-9A-Za-z]+)?' | sort -Vu
+}
+
+dl_github_release() {
+    local url=$1 version=$2 output=$3 arch=$4 dpi=$5
+    local download_url ver_clean asset
+    local -a all_assets=()
+    local -a matches=()
+    local -a wanted=()
+    local strict=false
+
+    ver_clean=${version// /}
+    ver_clean=${ver_clean#v}
+
+    case "$arch" in
+        arm64-v8a)
+            wanted=("arm64-v8a")
+            strict=true
+            ;;
+        arm-v7a|armeabi-v7a)
+            wanted=("arm-v7a" "armeabi-v7a")
+            strict=true
+            ;;
+        x86)
+            wanted=("x86")
+            strict=true
+            ;;
+        x86_64)
+            wanted=("x86_64")
+            strict=true
+            ;;
+        both)
+            wanted=("arm64-v8a" "arm-v7a")
+            strict=true
+            ;;
+        all|*)
+            wanted=("all" "universal" "noarch")
+            strict=false
+            ;;
+    esac
+
+    while IFS= read -r asset; do
+        [ -z "$asset" ] && continue
+        [[ "$asset" != *"${ver_clean}"* ]] && continue
+        all_assets+=("$asset")
+    done < <(echo "$__GITHUB_RELEASE_RESP__" | jq -r '.assets[].name')
+
+    if [ "$strict" = true ]; then
+        case "$arch" in
+            arm-v7a|armeabi-v7a)
+                if ! printf '%s\n' "${all_assets[@]}" | grep -Eq -- 'arm-v7a|armeabi-v7a'; then
+                    epr "GitHub release missing required arch 'arm-v7a' for version '${version}'"
+                    return 1
+                fi
+                ;;
+            both)
+                if ! printf '%s\n' "${all_assets[@]}" | grep -Eq -- 'arm64-v8a'; then
+                    epr "GitHub release missing required arch 'arm64-v8a' for version '${version}'"
+                    return 1
+                fi
+                if ! printf '%s\n' "${all_assets[@]}" | grep -Eq -- 'arm-v7a|armeabi-v7a'; then
+                    epr "GitHub release missing required arch 'arm-v7a' for version '${version}'"
+                    return 1
+                fi
+                ;;
+            *)
+                for want in "${wanted[@]}"; do
+                    if ! printf '%s\n' "${all_assets[@]}" | grep -Eq -- "${want}"; then
+                        epr "GitHub release missing required arch '${want}' for version '${version}'"
+                        return 1
+                    fi
+                done
+                ;;
+        esac
+    fi
+
+    for asset in "${all_assets[@]}"; do
+        for want in "${wanted[@]}"; do
+            case "$want" in
+                arm64-v8a)
+                    if [[ "$asset" == *"arm64-v8a"* ]]; then
+                        matches+=("$asset")
+                    fi
+                    ;;
+                arm-v7a|armeabi-v7a)
+                    if [[ "$asset" == *"arm-v7a"* || "$asset" == *"armeabi-v7a"* ]]; then
+                        matches+=("$asset")
+                    fi
+                    ;;
+                x86)
+                    if [[ "$asset" == *"x86"* && "$asset" != *"x86_64"* ]]; then
+                        matches+=("$asset")
+                    fi
+                    ;;
+                x86_64)
+                    if [[ "$asset" == *"x86_64"* ]]; then
+                        matches+=("$asset")
+                    fi
+                    ;;
+                all|universal|noarch)
+                    if [[ "$asset" == *"all"* || "$asset" == *"universal"* || "$asset" == *"noarch"* ]]; then
+                        matches+=("$asset")
+                    fi
+                    ;;
+            esac
+        done
+    done
+
+    if [ "${#matches[@]}" -eq 0 ]; then
+        epr "No compatible GitHub release asset found for ${version} (${arch})"
+        return 1
+    fi
+
+    local -a ordered=()
+    for asset in "${matches[@]}"; do
+        if [[ "$asset" == *"arm64-v8a"* ]]; then
+            ordered+=("$asset")
+        elif [[ "$asset" == *"x86_64"* ]]; then
+            ordered+=("$asset")
+        elif [[ "$asset" == *"arm-v7a"* || "$asset" == *"armeabi-v7a"* ]]; then
+            ordered+=("$asset")
+        elif [[ "$asset" == *"x86"* ]]; then
+            ordered+=("$asset")
+        elif [[ "$asset" == *"all"* || "$asset" == *"universal"* || "$asset" == *"noarch"* ]]; then
+            ordered+=("$asset")
+        fi
+    done
+    [ "${#ordered[@]}" -gt 0 ] && matches=("${ordered[@]}")
+
+    asset="${matches[0]}"
+    download_url=$(echo "$__GITHUB_RELEASE_RESP__" | jq -r --arg n "$asset" '.assets[] | select(.name == $n) | .browser_download_url' | head -n 1)
+
+    if [ -z "$download_url" ] || [ "$download_url" = "null" ]; then
+        return 1
+    fi
+
+    pr "Selected GitHub asset: $asset"
+    dl_url="$download_url"
+
+    if [[ "$asset" == *.apkm ]]; then
+        req "$download_url" "${output}.apkm" || return 1
+        merge_splits "${output}.apkm" "$output"
+    else
+        req "$download_url" "$output" || return 1
+    fi
+    return 0
+}
 # --------------------------------------------------
 
 patch_apk() {
@@ -580,7 +796,7 @@ patch_apk() {
 	tmp_files="$(pwd)/$(mktemp -d -p "$TEMP_DIR")"
 
 	local cmd="java -jar '$cli_jar' patch '$stock_input' -o '$patched_apk' -p '$patches_jar' --keystore=ks.keystore \
---keystore-entry-password=123456789 --keystore-password=123456789 --signer=jhc --keystore-entry-alias=jhc -t '$tmp_files' $patcher_args"
+--keystore-entry-password=123456789 --keystore-password=123456789 --signer=E85 --keystore-entry-alias=E85 -t '$tmp_files' $patcher_args"
 
 	# TODO: remove this later
 	local cli_name
@@ -616,6 +832,8 @@ build_rv() {
 	local dl_from=${args[dl_from]}
 	local arch=${args[arch]}
 	local arch_f="${arch// /}"
+
+	export TARGET_APP_NAME="${args[app_name]}"
 
 	local p_patcher_args=()
 	if [ "${args[excluded_patches]}" ]; then p_patcher_args+=("$(join_args "${args[excluded_patches]}" -d)"); fi
@@ -722,7 +940,18 @@ build_rv() {
 			return 0
 		fi
 	fi
-	log "${table}: ${version}"
+    if [ "$dl_from" = apkmirror ]; then
+        dl_from="APKMirror"
+    elif [ "$dl_from" = uptodown ]; then
+        dl_from="Uptodown"
+	elif [ "$dl_from" = archive ]; then
+		dl_from="Archive"
+	elif [ "$dl_from" = direct ]; then
+		dl_from="Direct URL"
+	elif [ "$dl_from" = github_release ]; then
+		dl_from="GitHub Release"
+    fi
+	log "${table}: ${version}\ndownloaded from: [$dl_from - ${table}]($dl_url)"
 
 	local microg_patch
 	microg_patch=$(grep "^Name: " <<<"$list_patches" | grep -i "gmscore\|microg" || :) microg_patch=${microg_patch#*: }
@@ -855,7 +1084,7 @@ module_prop() {
 name=${2}
 version=v${3}
 versionCode=${NEXT_VER_CODE}
-author=j-hc
+author=E85 Addict & j-hc
 description=${4}" >"${6}/module.prop"
 
 	if [ "$ENABLE_MODULE_UPDATE" = true ]; then echo "updateJson=${5}" >>"${6}/module.prop"; fi

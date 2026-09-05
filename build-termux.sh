@@ -31,43 +31,43 @@ if [ ! -f ~/.rvmm_"$(date '+%Y%m')" ]; then
 fi
 mkdir -p /sdcard/Download/revanced-magisk-module/
 
-if [ -d revanced-magisk-module ] || [ -f config.toml ]; then
+if [ -d revanced-magisk-module ] || [ -f config-E85.toml ]; then
 	if [ -d revanced-magisk-module ]; then cd revanced-magisk-module; fi
 	pr "Checking for revanced-magisk-module updates"
 	git fetch
 	if git status | grep -q 'is behind\|fatal'; then
 		pr "revanced-magisk-module is not synced with upstream."
-		pr "Cloning revanced-magisk-module. config.toml will be preserved."
+		pr "Cloning revanced-magisk-module. config-E85.toml will be preserved."
 		cd ..
-		cp -f revanced-magisk-module/config.toml .
+		cp -f revanced-magisk-module/config-E85.toml .
 		rm -rf revanced-magisk-module
-		git clone https://github.com/j-hc/revanced-magisk-module --recurse --depth 1
-		mv -f config.toml revanced-magisk-module/config.toml
+		git clone https://github.com/E85Addict/revanced-magisk-module --recurse --depth 1
+		mv -f config-E85.toml revanced-magisk-module/config-E85.toml
 		cd revanced-magisk-module
 	fi
 else
 	pr "Cloning revanced-magisk-module."
-	git clone https://github.com/j-hc/revanced-magisk-module --depth 1
+	git clone https://github.com/E85Addict/revanced-magisk-module --depth 1
 	cd revanced-magisk-module
-	sed -i '/^enabled.*/d; /^\[.*\]/a enabled = false' config.toml
+	sed -i '/^enabled.*/d; /^\[.*\]/a enabled = false' config-E85.toml
 	grep -q 'revanced-magisk-module' ~/.gitconfig 2>/dev/null ||
 		git config --global --add safe.directory ~/revanced-magisk-module
 fi
 
-[ -f ~/storage/downloads/revanced-magisk-module/config.toml ] ||
-	cp config.toml ~/storage/downloads/revanced-magisk-module/config.toml
+[ -f ~/storage/downloads/revanced-magisk-module/config-E85.toml ] ||
+	cp config-E85.toml ~/storage/downloads/revanced-magisk-module/config-E85.toml
 
 if ask "Open rvmm-config-gen to generate a config?"; then
 	am start -a android.intent.action.VIEW -d https://j-hc.github.io/rvmm-config-gen/
 fi
 printf "\n"
 until
-	if ask "Open 'config.toml' to configure builds?\nAll are disabled by default, you will need to enable at first time building"; then
-		am start -a android.intent.action.VIEW -d file:///sdcard/Download/revanced-magisk-module/config.toml -t text/plain
+	if ask "Open 'config-E85.toml' to configure builds?\nAll are disabled by default, you will need to enable at first time building"; then
+		am start -a android.intent.action.VIEW -d file:///sdcard/Download/revanced-magisk-module/config-E85.toml -t text/plain
 	fi
 	ask "Setup is done. Do you want to start building?"
 do :; done
-cp -f ~/storage/downloads/revanced-magisk-module/config.toml config.toml
+cp -f ~/storage/downloads/revanced-magisk-module/config-E85.toml config-E85.toml
 
 ./build.sh
 

@@ -1,7 +1,5 @@
 Music-Morphe: 9.15.51
 downloaded from: [GitHub Release - Music-Morphe](https://github.com/E85Addict/APKs/releases/download/com.google.android.apps.youtube.music/com.google.android.apps.youtube.music-9.15.51-arm64-v8a.apk)  
-TikTok: 46.2.3
-downloaded from: [GitHub Release - TikTok](https://github.com/E85Addict/APKs/releases/download/com.zhiliaoapp.musically/com.zhiliaoapp.musically-46.2.3-all.apk)  
 YouTube-Morphe: 21.07.247
 downloaded from: [GitHub Release - YouTube-Morphe](https://github.com/E85Addict/APKs/releases/download/com.google.android.youtube/com.google.android.youtube-21.07.247-all.apk)  
 
@@ -10,14 +8,12 @@ Use [zygisk-detach](https://github.com/j-hc/zygisk-detach) to detach YouTube and
 
 [revanced-magisk-module](https://github.com/E85Addict/revanced-magisk-module)
   
-Patches: icysymmetra/patches-0.8.0-dev.4.mpp  
-[Changelog](https://github.com/icysymmetra/tiktok-patches-for-morphe/releases/tag/v0.8.0-dev.4)
-
-Patches: MorpheApp/patches-1.42.0-dev.5.mpp  
-[Changelog](https://github.com/MorpheApp/morphe-patches/releases/tag/v1.42.0-dev.5)
+Patches: MorpheApp/patches-1.42.0-dev.6.mpp  
+[Changelog](https://github.com/MorpheApp/morphe-patches/releases/tag/v1.42.0-dev.6)
 
 CLI: MorpheApp/morphe-desktop-1.15.0-all.jar    
 
 Skipped:  
 Patches: crimera/patches-3.10.0-dev.4.mpp  
 Patches: E85Addict/patches-6.2.1.rvp    
+Patches: icysymmetra/patches-0.8.0-dev.4.mpp    

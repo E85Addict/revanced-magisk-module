@@ -1,6 +1,5 @@
 logging-to-file = true      # enables logging of every patch process to a separate file
 enable-module-update = true # set this to false if you do not want to receive updates for the module
-parallel-jobs = 1
 
 patches-version = "dev" # can be "dev" or "stable", dev is the latest commit of the patches repo, stable is the latest release
 #cli-version = "dev" # can be "dev" or "stable", dev is the latest commit of the cli repo, stable is the latest release

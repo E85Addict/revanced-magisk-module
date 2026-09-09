@@ -1,0 +1,76 @@
+[
+  {
+    "patchName": "Custom branding icon for YouTube Music",
+    "options": [
+      {
+        "key": "appIcon",
+        "value": "revancify_red"
+      },
+      {
+        "key": "changeSplashIcon",
+        "value": true
+      },
+      {
+        "key": "restoreOldSplashIcon",
+        "value": false
+      }
+    ]
+  },
+  {
+    "patchName": "Custom branding name for YouTube Music",
+    "options": [
+      {
+        "key": "appNameNotification",
+        "value": "YT Music"
+      },
+      {
+        "key": "appNameLauncher",
+        "value": "YT Music"
+      }
+    ]
+  },
+  {
+    "patchName": "Custom header for YouTube Music",
+    "options": [
+      {
+        "key": "customHeader",
+        "value": "custom_branding_icon"
+      }
+    ]
+  },
+  {
+    "patchName": "Custom branding icon for YouTube",
+    "options": [
+      {
+        "key": "appIcon",
+        "value": "revancify_red"
+      },
+      {
+        "key": "changeSplashIcon",
+        "value": true
+      },
+      {
+        "key": "restoreOldSplashAnimation",
+        "value": true
+      }
+    ]
+  },
+  {
+    "patchName": "Custom branding name for YouTube",
+    "options": [
+      {
+        "key": "appName",
+        "value": "YouTube"
+      }
+    ]
+  },
+  {
+    "patchName": "Custom header for YouTube",
+    "options": [
+      {
+        "key": "customHeader",
+        "value": "custom_branding_icon"
+      }
+    ]
+  }
+]

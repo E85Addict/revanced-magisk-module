@@ -19,7 +19,7 @@ CLI: MorpheApp/morphe-desktop/morphe-desktop-1.20.0-all.jar
 Patches: icysymmetra/tiktok-patches-for-morphe/patches-0.9.0-dev.4.mpp  
 [Changelog](https://github.com/icysymmetra/tiktok-patches-for-morphe/releases/tag/v0.9.0-dev.4)
 
-Patches: MorpheApp/morphe-patches/patches-2.0.0.mpp  
+Patches: MorpheApp/morphe-patches/patches-1.0.0.mpp  
 [Changelog](https://github.com/MorpheApp/morphe-patches/releases/tag/v2.0.0)  
 
 Skipped:  

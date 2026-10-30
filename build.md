@@ -14,6 +14,6 @@ Patches: MorpheApp/morphe-patches/patches-2.0.0.mpp
 CLI: MorpheApp/morphe-desktop/morphe-desktop-1.20.0-all.jar    
 
 Skipped:  
-Patches: crimera/piko/patches-3.11.0-dev.3.mpp  
+Patches: crimera/piko/patches-3.11.0-dev.1.mpp  
 Patches: E85Addict/E85Addict.github.io/patches-6.2.1.rvp      
-Patches: icysymmetra/tiktok-patches-for-morphe/patches-0.9.0-dev.4.mpp    
+Patches: icysymmetra/tiktok-patches-for-morphe/patches-0.9.0-dev.1.mpp    

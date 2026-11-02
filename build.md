@@ -1,5 +1,3 @@
-Instagram: 452.1.0.53.64
-downloaded from: [GitHub Release - Instagram](https://github.com/E85Addict/APKs/releases/download/com.instagram.android/com.instagram.android-452.1.0.53.64-arm64-v8a.apkm)  
 TikTok: 47.4.3
 downloaded from: [GitHub Release - TikTok](https://github.com/E85Addict/APKs/releases/download/com.zhiliaoapp.musically/com.zhiliaoapp.musically-47.4.3-all.apk)  
 
@@ -8,14 +6,13 @@ Use [zygisk-detach](https://github.com/j-hc/zygisk-detach) to detach YouTube and
 
 [revanced-magisk-module](https://github.com/E85Addict/revanced-magisk-module)
   
-Patches: crimera/piko/patches-3.11.0-dev.4.mpp  
-[Changelog](https://github.com/crimera/piko/releases/tag/v3.11.0-dev.4)
+Patches: icysymmetra/tiktok-patches-for-morphe/patches-0.9.0-dev.6.mpp  
+[Changelog](https://github.com/icysymmetra/tiktok-patches-for-morphe/releases/tag/v0.9.0-dev.6)
 
-CLI: MorpheApp/morphe-desktop/morphe-desktop-1.20.0-all.jar  
-Patches: icysymmetra/tiktok-patches-for-morphe/patches-0.9.0-dev.5.mpp  
-[Changelog](https://github.com/icysymmetra/tiktok-patches-for-morphe/releases/tag/v0.9.0-dev.5)  
+CLI: MorpheApp/morphe-desktop/morphe-desktop-1.20.0-all.jar    
 
 Skipped:  
 Patches: VenusIsJaded/Venus-Patches/patches-1.20.0.mpp  
+Patches: crimera/piko/patches-3.11.0-dev.4.mpp  
 Patches: E85Addict/E85Addict.github.io/patches-6.2.1.rvp        
-Patches: MorpheApp/morphe-patches/patches-2.0.0.mpp    
+Patches: MorpheApp/morphe-patches/patches-2.0.0.mpp      

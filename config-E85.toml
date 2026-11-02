@@ -82,7 +82,7 @@ archive-dlurl = "https://archive.org/download/e85-apks/apks/com.zhiliaoapp.music
 
 [Instagram]
 enabled = true
-enable-update-checks = true
+#enable-update-checks = true
 build-mode = "both"
 rv-brand = "Piko"
 patches-source = "crimera/piko"

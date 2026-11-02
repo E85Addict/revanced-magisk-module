@@ -13,6 +13,6 @@ CLI: MorpheApp/morphe-desktop/morphe-desktop-1.20.0-all.jar
 
 Skipped:  
 Patches: VenusIsJaded/Venus-Patches/patches-1.20.0.mpp  
-Patches: crimera/piko/patches-3.11.0-dev.4.mpp  
+Patches: crimera/piko/patches-3.11.0-dev.1.mpp  
 Patches: E85Addict/E85Addict.github.io/patches-6.2.1.rvp        
 Patches: MorpheApp/morphe-patches/patches-2.0.0.mpp      

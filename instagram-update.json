@@ -1,6 +1,6 @@
 {
-  "version": "v452.1.0.53.64 (patches dev.4.mpp)",
-  "versionCode": 20250216,
-  "zipUrl": "https://github.com/E85Addict/revanced-magisk-module/releases/download/20250216/instagram-piko-module-v452.1.0.53.64-arm64-v8a.zip",
+  "version": "v452.1.0.53.64 (patches dev.5.mpp)",
+  "versionCode": 20250220,
+  "zipUrl": "https://github.com/E85Addict/revanced-magisk-module/releases/download/20250220/instagram-piko-module-v452.1.0.53.64-arm64-v8a.zip",
   "changelog": "https://raw.githubusercontent.com/E85Addict/revanced-magisk-module/update/build.md"
 }

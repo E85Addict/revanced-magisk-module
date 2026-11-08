@@ -116,7 +116,8 @@ archive-dlurl = "https://archive.org/download/jhc-apks/apks/com.google.android.y
 [Discord]
 enabled = true
 enable-update-checks = true
-build-mode = "apk"
+build-mode = "both"
+include-stock = "split"
 rv-brand = "Venus"
 patches-source = "VenusIsJaded/Venus-Patches"
 patches-version = "dev" 
@@ -124,4 +125,3 @@ cli-source = "MorpheApp/morphe-desktop"
 github_release-dlurl = "https://github.com/E85Addict/APKs/releases/tag/com.discord"
 apkmirror-dlurl = "https://www.apkmirror.com/apk/discord/discord-chat-for-gamers/"
 version = "auto"
-

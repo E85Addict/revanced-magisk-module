@@ -7,3 +7,4 @@ test*
 build.md
 cmpr
 *-temporary-files
+/bin/curl-impersonate/

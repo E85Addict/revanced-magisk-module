@@ -12,7 +12,7 @@ Patches: icysymmetra/tiktok-patches-for-morphe/patches-0.11.0-dev.4.mpp
 CLI: MorpheApp/morphe-desktop/morphe-desktop-2.1.1-all.jar    
 
 Skipped:  
-Patches: VenusIsJaded/Venus-Patches/patches-1.21.1.mpp  
+Patches: VenusIsJaded/Venus-Patches/patches-1.21.0.mpp  
 Patches: crimera/piko/patches-3.11.1.mpp  
 Patches: E85Addict/E85Addict.github.io/patches-6.2.1.rvp          
 Patches: MorpheApp/morphe-patches/patches-2.2.0.mpp            

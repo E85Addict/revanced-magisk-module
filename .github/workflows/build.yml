@@ -55,10 +55,10 @@ jobs:
           GH_REPO: ${{ vars.REPO_ALT || github.repository }}
           NEXT_VER_CODE: ${{ steps.next_ver_code.outputs.NEXT_VER_CODE }}
         run: |
-          CFG=config.toml
+          CFG=config-E85.toml
           if git checkout origin/update build.md; then
             echo "Updating config"
-            UPDATE_CFG=$(./build.sh config.toml --config-update)
+            UPDATE_CFG=$(./build.sh config-E85.toml --config-update)
             if [ "$UPDATE_CFG" ]; then
               echo "'$UPDATE_CFG'"
               echo "$UPDATE_CFG" > config.json
@@ -171,3 +171,9 @@ jobs:
           MSG=${MSG:0:9450}
           POST="https://api.telegram.org/bot${TG_TOKEN}/sendMessage"
           curl -X POST --data-urlencode "parse_mode=Markdown" --data-urlencode "disable_web_page_preview=true" --data-urlencode "text=${MSG}" --data-urlencode "chat_id=${TG_CHAT}" "$POST"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: logs
+          path: logs
+          if-no-files-found: ignore
